@@ -1,13 +1,27 @@
-import { useState } from 'react'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import LoginPage from "./pages/LoginPage"
+import DashboardPage from "./pages/DashboardPage"
+import ProtectedRoute from "./components/ProtectedRoute"
+import RegisterPage from "./pages/RegisterPage"
 
 const App = () => {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-800">NutriTrack</h1>
-    </div>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/register" element={<RegisterPage />} />
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App
