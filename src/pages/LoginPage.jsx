@@ -14,9 +14,10 @@ const LoginPage = () => {
 
         try {
             const data = await login(email, password)
-            localStorage.setItem("token", data.acceess_token)
+            localStorage.setItem("token", data.access_token)
             navigate("/dashboard")
         } catch (err) {
+            console.log(err)
             setError("Invalid email or password")
         }
     }
@@ -63,7 +64,6 @@ const LoginPage = () => {
                         Register
                     </Link>
                 </p>
-                
             </form>
         </div>
     )

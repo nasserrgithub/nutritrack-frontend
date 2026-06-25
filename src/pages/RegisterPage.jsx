@@ -33,6 +33,7 @@ const RegisterPage = () => {
             })
             navigate("/login")
         } catch (err) {
+            console.log(err)
             setError("Registration failed. Check your details and try again.")
         }
     }

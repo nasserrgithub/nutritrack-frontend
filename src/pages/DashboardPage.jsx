@@ -1,25 +1,63 @@
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { getDailySummary, getActiveGoal } from "../api/summary"
+import { getTodayDate } from "../utils/date"
+import MacroRing from "../components/MacroRing"
 
 const DashboardPage = () => {
-    const navigate = useNavigate()
+    const [summary, setSummary] = useState(null)
+    const [goal, setGoal] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState("")
 
-    const handleLogout = () => {
-        localStorage.removeItem("token")
-        navigate("/login", { replace: true })
-    }
+    useEffect(() => {
+        const today = getTodayDate()
+
+        const fetchData = async () => {
+            try {
+                const summaryData = await getDailySummary(today)
+                const goalData = await getActiveGoal()
+                setSummary(summaryData)
+                setGoal(goalData)
+            } catch (err) {
+                console.log(err)
+                setError("Could not load dashboard data")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [])
+
+    if (loading) return <p className="p-8">Loading...</p>
+    if (error) return <p className="p-8 text-red-500">{error}</p>
 
     return (
         <div className="min-h-screen bg-gray-50 p-8">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-                <button
-                    onClick={handleLogout}
-                    className="text-sm text-red-600 hover:underline"
-                >
-                    Log out
-                </button>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+
+            <div className="grid grid-cols-2 gap-4">
+                <MacroRing
+                    label="Calories"
+                    total={summary.total_calories}
+                    goal={goal.calories}
+                />
+                <MacroRing
+                    label="Protein (g)"
+                    total={summary.total_protein}
+                    goal={goal.protein_g}
+                />
+                <MacroRing
+                    label="Carbs (g)"
+                    total={summary.total_carbs}
+                    goal={goal.carbs_g}
+                />
+                <MacroRing
+                    label="Fat (g)"
+                    total={summary.total_fat}
+                    goal={goal.fat_g}
+                />
             </div>
-            <p className="text-gray-500 mt-2">Welcome to NutriTrack.</p>
         </div>
     )
 }
