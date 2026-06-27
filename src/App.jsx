@@ -5,6 +5,8 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import RegisterPage from "./pages/RegisterPage"
 import FoodLogPage from "./pages/FoodLogPage"
 import WeightHistoryPage from "./pages/WeightHistoryPage"
+import GoalsPage from "./pages/GoalsPage"
+import SuggestionsPage from "./pages/SuggestionsPage"
 
 const App = () => {
     return (
@@ -34,6 +36,22 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <WeightHistoryPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/goals"
+                    element={
+                        <ProtectedRoute>
+                            <GoalsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/suggestions"
+                    element={
+                        <ProtectedRoute>
+                            <SuggestionsPage />
                         </ProtectedRoute>
                     }
                 />

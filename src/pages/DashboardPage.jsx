@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { getDailySummary, getActiveGoal } from "../api/summary"
+import { getDailySummary } from "../api/summary"
+import { getActiveGoal } from "../api/goals"
 import { getTodayDate } from "../utils/date"
 import MacroRing from "../components/MacroRing"
 
@@ -51,6 +52,12 @@ const DashboardPage = () => {
                             className="text-sm text-blue-600 hover:underline"
                         >
                             Log food
+                        </Link>
+                        <Link
+                            to="/suggestions"
+                            className="text-sm text-blue-600 hover:underline"
+                        >
+                            Get suggestions
                         </Link>
                         <button
                             onClick={handleLogout}
