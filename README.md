@@ -28,6 +28,7 @@ function FoodCard({ name, calories }) {
 **React** is a UI library — components, JSX, state, rendering. It has no opinion about bundling, compiling, or serving files.
 
 **Vite** is a build tool. It takes source files (`.jsx`, `.css`, etc.) and:
+
 - Transpiles JSX into plain JavaScript the browser understands
 - Bundles files into optimized output
 - Runs a fast local dev server with instant hot-reload
@@ -40,7 +41,7 @@ npm create vite@latest my-app -- --template react
 npm create vite@latest my-app -- --template vue
 ```
 
-React needs *some* build tool to convert JSX into runnable JavaScript. Other options exist (Create React App — now deprecated, Next.js, Webpack manually) but Vite is the current standard recommendation.
+React needs _some_ build tool to convert JSX into runnable JavaScript. Other options exist (Create React App — now deprecated, Next.js, Webpack manually) but Vite is the current standard recommendation.
 
 ---
 
@@ -97,12 +98,12 @@ npm install @tailwindcss/vite
 
 ```javascript
 // vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss()],
 })
 ```
 
@@ -121,7 +122,7 @@ Custom theming in v4 happens directly in CSS instead of a JS config file:
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #1a1a2e;
+    --color-brand: #1a1a2e;
 }
 ```
 
@@ -140,14 +141,16 @@ plugins: [react(), tailwindcss()]
 ```javascript
 // Vite plugin internals — "transform" is a hook
 function myPlugin() {
-  return {
-    name: "my-plugin",
-    transform(code, id) { /* called by Vite for every file */ },
-  }
+    return {
+        name: "my-plugin",
+        transform(code, id) {
+            /* called by Vite for every file */
+        },
+    }
 }
 ```
 
-**The relationship:** plugins are often *built from* several hooks combined together. A hook is the raw extension point; a plugin is a packaged bundle of one or more hooks plus setup logic.
+**The relationship:** plugins are often _built from_ several hooks combined together. A hook is the raw extension point; a plugin is a packaged bundle of one or more hooks plus setup logic.
 
 **A callback** is the actual mechanism underneath both — a function you hand to some other system, which calls it later, at the right moment:
 
@@ -158,6 +161,7 @@ Plugin  (installed package, e.g. tailwindcss())
 ```
 
 Backend equivalents already seen:
+
 ```python
 @app.exception_handler(FoodNotFoundError)   # hook-like — one specific extension point
 async def handler(request, exc): ...         # the callback itself
@@ -194,7 +198,7 @@ Component style convention used throughout NutriTrack — arrow functions assign
 
 ```jsx
 const App = () => {
-  return <div>Hello</div>
+    return <div>Hello</div>
 }
 
 export default App
@@ -210,7 +214,7 @@ This is consistent with how most other JS in the app is written (event handlers,
 import { useState } from "react"
 
 const Counter = () => {
-    const [count, setCount] = useState(0)  // count starts at 0
+    const [count, setCount] = useState(0) // count starts at 0
 
     return (
         <div>
@@ -222,6 +226,7 @@ const Counter = () => {
 ```
 
 `useState(initialValue)` returns an array of exactly two things:
+
 - the current value (read this to display data)
 - a setter function (call this to update it)
 
@@ -300,16 +305,16 @@ useEffect(async () => {
 ```jsx
 // Option A — .then() chains, no async/await needed
 useEffect(() => {
-  getDailySummary(today).then(setSummary)
+    getDailySummary(today).then(setSummary)
 }, [])
 
 // Option B — define a separate async function inside, then call it
 useEffect(() => {
-  const fetchData = async () => {
-    const data = await getDailySummary(today)
-    setSummary(data)
-  }
-  fetchData()
+    const fetchData = async () => {
+        const data = await getDailySummary(today)
+        setSummary(data)
+    }
+    fetchData()
 }, [])
 ```
 
@@ -319,8 +324,8 @@ Option B is preferred in NutriTrack since it reads sequentially (top-to-bottom) 
 
 ```jsx
 useEffect(() => {
-  const timer = setInterval(() => console.log("tick"), 1000)
-  return () => clearInterval(timer)   // runs on unmount, or before the effect re-runs
+    const timer = setInterval(() => console.log("tick"), 1000)
+    return () => clearInterval(timer) // runs on unmount, or before the effect re-runs
 }, [])
 ```
 
@@ -333,7 +338,11 @@ Props (properties) are how a parent component passes data down to a child — co
 ```jsx
 // child — receives props
 const FoodCard = ({ name, calories }) => {
-    return <div>{name} — {calories} kcal</div>
+    return (
+        <div>
+            {name} — {calories} kcal
+        </div>
+    )
 }
 
 // parent — passes props
@@ -353,7 +362,7 @@ DashboardPage  (owns state: entries)
 
 Each level only knows what it directly receives. `FoodEntryCard` has no idea `DashboardPage` exists.
 
-**The rule for where state should live:** state lives in the *highest* component that needs it. If two sibling components both need the same data, that data's state lives in their common parent, and gets passed down to both as props.
+**The rule for where state should live:** state lives in the _highest_ component that needs it. If two sibling components both need the same data, that data's state lives in their common parent, and gets passed down to both as props.
 
 ```jsx
 const Dashboard = () => {
@@ -369,11 +378,11 @@ const Dashboard = () => {
 }
 ```
 
-**`children` prop** — whatever is written *between* a component's opening/closing tags automatically becomes its `children` prop:
+**`children` prop** — whatever is written _between_ a component's opening/closing tags automatically becomes its `children` prop:
 
 ```jsx
 <ProtectedRoute>
-  <DashboardPage />   {/* this becomes "children" inside ProtectedRoute */}
+    <DashboardPage /> {/* this becomes "children" inside ProtectedRoute */}
 </ProtectedRoute>
 ```
 
@@ -400,7 +409,7 @@ const ProtectedRoute = ({ children }) => {
 
 ## 11 — Pages vs components — folder conventions
 
-React itself doesn't distinguish between "pages" and "components" — both are just functions returning JSX. The split is a convention *we* impose for organization.
+React itself doesn't distinguish between "pages" and "components" — both are just functions returning JSX. The split is a convention _we_ impose for organization.
 
 ```
 src/pages/        — full screens tied to a route/URL
@@ -411,12 +420,14 @@ src/components/    — smaller, reusable pieces used INSIDE pages
 ```
 
 **Pages typically:**
+
 - Are referenced directly in `<Route element={<DashboardPage />} />`
 - Own the overall layout for that screen
 - Fetch the data the screen needs
 - Compose multiple smaller components together
 
 **Components typically:**
+
 - Receive data via props rather than fetching it themselves
 - Get reused across multiple pages
 - Are smaller, focused — "just display this one thing"
@@ -433,15 +444,15 @@ React Router enables navigation between different "pages" using the URL, **witho
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/" element={<Navigate to="/login" />} />
+            </Routes>
+        </BrowserRouter>
+    )
 }
 ```
 
@@ -458,18 +469,19 @@ const App = () => {
 import { useNavigate } from "react-router-dom"
 
 const LoginPage = () => {
-  const navigate = useNavigate()
+    const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const data = await login(email, password)
-    localStorage.setItem("token", data.access_token)
-    navigate("/dashboard")
-  }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const data = await login(email, password)
+        localStorage.setItem("token", data.access_token)
+        navigate("/dashboard")
+    }
 }
 ```
 
 `navigate("/dashboard")`:
+
 1. Updates the browser's URL bar via the History API — no network request, no reload
 2. React Router matches the new path against `<Routes>`
 3. React unmounts the current component, mounts the matched one
@@ -479,9 +491,9 @@ This is the SPA equivalent of `window.location.href = "..."`, except `window.loc
 **Variations:**
 
 ```jsx
-navigate("/login")                      // adds a new browser history entry
-navigate("/login", { replace: true })   // REPLACES the current history entry instead
-navigate(-1)                            // go back one step (like browser's Back button)
+navigate("/login") // adds a new browser history entry
+navigate("/login", { replace: true }) // REPLACES the current history entry instead
+navigate(-1) // go back one step (like browser's Back button)
 ```
 
 **When to use `replace: true`:** specifically when the page being left behind should become inaccessible going forward — e.g. after logout, so clicking the browser's Back button doesn't briefly attempt to render a now-unauthorized Dashboard before `ProtectedRoute` catches it. Login doesn't need `replace` — going back to `/login` after a successful login is harmless since the token still exists.
@@ -521,8 +533,8 @@ const [email, setEmail] = useState("")
 
 ```jsx
 const handleChange = (e) => {
-  const { name, value } = e.target
-  setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
 }
 ```
 
@@ -539,15 +551,15 @@ Requires each `<input>` to have a matching `name` attribute:
 
 ```jsx
 <form onSubmit={handleSubmit}>
-  ...
-  <button type="submit">Log in</button>
+    ...
+    <button type="submit">Log in</button>
 </form>
 ```
 
 ```jsx
 const handleSubmit = async (e) => {
-  e.preventDefault()   // stop the browser's default full-page-reload form submission
-  // ...custom logic instead
+    e.preventDefault() // stop the browser's default full-page-reload form submission
+    // ...custom logic instead
 }
 ```
 
@@ -558,7 +570,9 @@ const handleSubmit = async (e) => {
 ## 16 — Conditional rendering patterns
 
 ```jsx
-{error && <p className="text-red-500">{error}</p>}
+{
+    error && <p className="text-red-500">{error}</p>
+}
 ```
 
 `&&` short-circuit pattern — if `error` is a non-empty string (truthy), render the `<p>`. If `error` is `""` (falsy), React renders nothing.
@@ -569,7 +583,7 @@ if (error) return <p>{error}</p>
 return <div>...real content...</div>
 ```
 
-Early returns inside the component function — different branches of the *same function call* produce entirely different JSX depending on current state. Nothing is "skipped over" on a second pass — the whole function runs again from scratch on each render, and just happens to reach a different `return` statement depending on current state values.
+Early returns inside the component function — different branches of the _same function call_ produce entirely different JSX depending on current state. Nothing is "skipped over" on a second pass — the whole function runs again from scratch on each render, and just happens to reach a different `return` statement depending on current state values.
 
 ---
 
@@ -605,15 +619,15 @@ axios is a library for making HTTP requests, comparable to Python's `requests`. 
 ```javascript
 // fetch — built-in, more verbose
 fetch("http://localhost:8000/foods/")
-  .then(res => res.json())
-  .then(data => console.log(data))
+    .then((res) => res.json())
+    .then((data) => console.log(data))
 
 // axios — needs npm install, cleaner
-axios.get("http://localhost:8000/foods/")
-  .then(res => console.log(res.data))
+axios.get("http://localhost:8000/foods/").then((res) => console.log(res.data))
 ```
 
 **Why axios over fetch:**
+
 - Automatically parses JSON — no manual `.json()` call
 - Rejects on HTTP error status codes (404, 500) — `fetch` does NOT reject on these, only on network failures
 - Supports interceptors — auto-attach the JWT token to every outgoing request
@@ -636,26 +650,26 @@ axios.post(url, data)
 import axios from "axios"
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8000",
+    baseURL: "http://localhost:8000",
 })
 
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token")
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
+    const token = localStorage.getItem("token")
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
 })
 
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token")
-      window.location.href = "/login"
-    }
-    return Promise.reject(error)
-  }
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token")
+            window.location.href = "/login"
+        }
+        return Promise.reject(error)
+    },
 )
 
 export default apiClient
@@ -677,8 +691,8 @@ Conceptually identical to Python's `async`/`await` — a function marked `async`
 
 ```javascript
 export const login = async (email, password) => {
-  const response = await apiClient.post("/auth/login", { email, password })
-  return response.data
+    const response = await apiClient.post("/auth/login", { email, password })
+    return response.data
 }
 ```
 
@@ -688,12 +702,12 @@ export const login = async (email, password) => {
 
 ```jsx
 try {
-  const data = await login(email, password)
-  localStorage.setItem("token", data.access_token)
-  navigate("/dashboard")
+    const data = await login(email, password)
+    localStorage.setItem("token", data.access_token)
+    navigate("/dashboard")
 } catch (err) {
-  console.error(err)              // log full detail for developers
-  setError("Invalid email or password")   // simple message for end users
+    console.error(err) // log full detail for developers
+    setError("Invalid email or password") // simple message for end users
 }
 ```
 
@@ -708,8 +722,8 @@ Unlike Python (`KeyError`/`AttributeError`), JavaScript silently returns `undefi
 ```javascript
 const data = { access_token: "eyJhbGc..." }
 
-data.access_token    // "eyJhbGc..."  ✅
-data.acceess_token   // undefined     ❌ typo, but NO error thrown
+data.access_token // "eyJhbGc..."  ✅
+data.acceess_token // undefined     ❌ typo, but NO error thrown
 ```
 
 This is why a misspelled property access (`data.acceess_token` instead of `data.access_token`) doesn't crash — it just silently stores `undefined` wherever it's used next, making the bug much harder to spot than Python's equivalent would be. This exact typo caused a real debugging session in NutriTrack: login appeared to succeed (200 OK from the backend), but the token was never actually saved, since `localStorage.setItem("token", undefined)` doesn't throw — it just stores a useless value silently.
@@ -729,7 +743,7 @@ f"/summary/{date}"
 
 ```javascript
 // JavaScript — note the BACKTICKS, not regular quotes
-`/summary/${date}`
+;`/summary/${date}`
 ```
 
 Regular quotes (`'` or `"`) do NOT support `${}` interpolation — only backticks do.
@@ -754,10 +768,10 @@ Regular quotes (`'` or `"`) do NOT support `${}` interpolation — only backtick
 The browser's built-in persistent storage — survives page reloads and closing/reopening the browser (unlike React state, which resets on every reload).
 
 ```javascript
-localStorage.setItem("token", accessToken)   // save
-localStorage.getItem("token")                 // read — returns string or null
-localStorage.removeItem("token")              // delete one key
-localStorage.clear()                          // wipe everything for this site
+localStorage.setItem("token", accessToken) // save
+localStorage.getItem("token") // read — returns string or null
+localStorage.removeItem("token") // delete one key
+localStorage.clear() // wipe everything for this site
 ```
 
 Used in NutriTrack to persist the JWT token across page reloads, so a logged-in user doesn't get logged out just by refreshing the page.
@@ -773,13 +787,13 @@ Used in NutriTrack to persist the JWT token across page reloads, so a logged-in 
 import { Navigate } from "react-router-dom"
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token")
 
-  if (!token) {
-    return <Navigate to="/login" />
-  }
+    if (!token) {
+        return <Navigate to="/login" />
+    }
 
-  return children
+    return children
 }
 
 export default ProtectedRoute
@@ -788,16 +802,16 @@ export default ProtectedRoute
 ```jsx
 // App.jsx
 <Route
-  path="/dashboard"
-  element={
-    <ProtectedRoute>
-      <DashboardPage />
-    </ProtectedRoute>
-  }
+    path="/dashboard"
+    element={
+        <ProtectedRoute>
+            <DashboardPage />
+        </ProtectedRoute>
+    }
 />
 ```
 
-This only checks that a token *exists* in localStorage — it does NOT verify the token is actually valid or unexpired. An expired token would still pass this check; the actual rejection happens later when an API call returns 401, caught by the response interceptor (section 19), which then clears the token and redirects.
+This only checks that a token _exists_ in localStorage — it does NOT verify the token is actually valid or unexpired. An expired token would still pass this check; the actual rejection happens later when an API call returns 401, caught by the response interceptor (section 19), which then clears the token and redirects.
 
 ---
 
@@ -838,45 +852,47 @@ Recharts doesn't have a dedicated "progress ring" component — a `PieChart` con
 import { PieChart, Pie, Cell } from "recharts"
 
 const MacroRing = ({ label, total, goal }) => {
-  const consumed = Math.min(total, goal)
-  const remaining = Math.max(goal - total, 0)
+    const consumed = Math.min(total, goal)
+    const remaining = Math.max(goal - total, 0)
 
-  const data = [
-    { name: "consumed", value: consumed },
-    { name: "remaining", value: remaining },
-  ]
+    const data = [
+        { name: "consumed", value: consumed },
+        { name: "remaining", value: remaining },
+    ]
 
-  const percentage = goal > 0 ? (total / goal) * 100 : 0
+    const percentage = goal > 0 ? (total / goal) * 100 : 0
 
-  return (
-    <div className="bg-white rounded-lg shadow p-4 w-full flex flex-col items-center">
-      <h3 className="text-sm font-medium text-gray-500 mb-2 self-start">{label}</h3>
+    return (
+        <div className="bg-white rounded-lg shadow p-4 w-full flex flex-col items-center">
+            <h3 className="text-sm font-medium text-gray-500 mb-2 self-start">
+                {label}
+            </h3>
 
-      <PieChart width={140} height={140}>
-        <Pie
-          data={data}
-          dataKey="value"
-          cx="50%"
-          cy="50%"
-          innerRadius={45}
-          outerRadius={60}
-          startAngle={90}
-          endAngle={-270}
-        >
-          <Cell fill="#3b82f6" />
-          <Cell fill="#e5e7eb" />
-        </Pie>
-      </PieChart>
+            <PieChart width={140} height={140}>
+                <Pie
+                    data={data}
+                    dataKey="value"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={45}
+                    outerRadius={60}
+                    startAngle={90}
+                    endAngle={-270}
+                >
+                    <Cell fill="#3b82f6" />
+                    <Cell fill="#e5e7eb" />
+                </Pie>
+            </PieChart>
 
-      <p className="text-lg font-bold text-gray-800 -mt-20">
-        {percentage.toFixed(0)}%
-      </p>
+            <p className="text-lg font-bold text-gray-800 -mt-20">
+                {percentage.toFixed(0)}%
+            </p>
 
-      <p className="text-sm text-gray-400 mt-16">
-        {total} / {goal}
-      </p>
-    </div>
-  )
+            <p className="text-sm text-gray-400 mt-16">
+                {total} / {goal}
+            </p>
+        </div>
+    )
 }
 ```
 
@@ -895,14 +911,16 @@ const MacroRing = ({ label, total, goal }) => {
 ```javascript
 const consumed = Math.min(total, goal)
 ```
+
 Prevents the "consumed" slice from exceeding the goal even if the real `total` is higher — e.g. eating 2200 against an 1800 goal still renders as a fully-filled ring (100%), not a broken/meaningless overflow.
 
 ```javascript
 const remaining = Math.max(goal - total, 0)
 ```
+
 Prevents the "remaining" slice from going negative (which would either break the chart or render nonsensically) when `total` exceeds `goal`.
 
-Both clamps only affect the *visual ring* — the percentage *text* above it deliberately uses the raw, unclamped `total / goal`, so it can correctly read `"122%"` even while the ring itself visually caps at a full circle.
+Both clamps only affect the _visual ring_ — the percentage _text_ above it deliberately uses the raw, unclamped `total / goal`, so it can correctly read `"122%"` even while the ring itself visually caps at a full circle.
 
 ---
 
@@ -911,6 +929,7 @@ Both clamps only affect the *visual ring* — the percentage *text* above it del
 When the UI behaves unexpectedly but backend logs show success (e.g. `201 Created`, `200 OK`), the bug is almost always happening **entirely on the frontend, after the network call already completed**. Always check the browser DevTools Console first in this situation — it surfaces JavaScript errors (like `ReferenceError: response is not defined`) that never reach the backend logs at all.
 
 **DevTools Network tab tips:**
+
 - Filter by **Fetch/XHR** to hide Vite's own dev-server traffic (websockets, module-loading scripts) and see only actual API calls
 - Use the filter search box (e.g. type `login`) to narrow results by URL
 - Click a request → **Payload/Request** tab to see exactly what was sent
@@ -918,6 +937,7 @@ When the UI behaves unexpectedly but backend logs show success (e.g. `201 Create
 - Click a request → **Headers** tab to confirm whether `Authorization: Bearer ...` was actually attached
 
 **General debugging principle reinforced across two real bugs found in this project:**
+
 1. A typo (`rseponse` vs `response`) in `auth.js` caused a `ReferenceError`, caught by `try/catch`, displaying a generic "Registration failed" message — even though the backend had already created the user successfully.
 2. A typo (`acceess_token` vs `access_token`) silently stored `undefined` into `localStorage` instead of throwing any error at all (per section 21) — leading to a confusing chain of 401 errors on every subsequent API call, even though login itself succeeded with `200 OK`.
 
@@ -1028,6 +1048,7 @@ class MacroAggregator:
 ```
 
 Call sites updated accordingly:
+
 ```python
 # api/routers/summary.py — single-day summary
 MacroAggregator(food_entries, macro_goal)            # num_days defaults to 1
@@ -1036,7 +1057,7 @@ MacroAggregator(food_entries, macro_goal)            # num_days defaults to 1
 MacroAggregator(food_entries, macro_goal, num_days=7)  # explicit 7-day window
 ```
 
-**Why this is a better design:** the previous version silently inferred "how many days" from counting distinct dates *present in the entries* — which breaks down precisely when there are zero entries (zero days inferred, when the correct answer for a daily summary is "I am still asking about exactly 1 day, regardless of whether anything was logged"). Making `num_days` an explicit parameter moves that decision to the call site, where it's unambiguous and can never silently default to the wrong number.
+**Why this is a better design:** the previous version silently inferred "how many days" from counting distinct dates _present in the entries_ — which breaks down precisely when there are zero entries (zero days inferred, when the correct answer for a daily summary is "I am still asking about exactly 1 day, regardless of whether anything was logged"). Making `num_days` an explicit parameter moves that decision to the call site, where it's unambiguous and can never silently default to the wrong number.
 
 **Lesson:** a frontend integration test (the dashboard, hitting real endpoints with a fresh account) caught a backend bug that unit-level testing of `MacroAggregator` alone — using only pre-populated, non-empty fixture data — would likely never have surfaced. End-to-end testing with deliberately "empty" or "fresh" states is valuable precisely because it exercises edge cases that hand-picked happy-path test data tends to skip.
 
@@ -1053,7 +1074,7 @@ Yes — both `function App() {}` and `const App = () => {}` are valid and behave
 Three options: manually delete the entry in DevTools → Application → Local Storage; run `localStorage.clear()` in the Console tab (fastest); or just open an Incognito/Private window, which always starts with empty storage. The third option is most convenient for repeatedly testing auth flows.
 
 **"Should we use props in `ProtectedRoute`? Why aren't we passing data down to children there?"**
-`children` is itself a (special, conventional) prop — whatever's nested between a component's opening/closing tags. `ProtectedRoute` doesn't need to pass *additional* data into its children because its only job is a yes/no gate check; the wrapped pages fetch their own data independently. The mechanism to inject extra props into `children` does exist (`cloneElement`, section 10) for cases where a wrapper computes something its children genuinely need.
+`children` is itself a (special, conventional) prop — whatever's nested between a component's opening/closing tags. `ProtectedRoute` doesn't need to pass _additional_ data into its children because its only job is a yes/no gate check; the wrapped pages fetch their own data independently. The mechanism to inject extra props into `children` does exist (`cloneElement`, section 10) for cases where a wrapper computes something its children genuinely need.
 
 **"What is the difference between pages and components?"**
 Purely a convention, not something React enforces — see section 11 for the full breakdown (pages = routed screens that own data-fetching and layout; components = smaller reusable pieces driven entirely by props).
@@ -1065,19 +1086,19 @@ Purely a convention, not something React enforces — see section 11 for the ful
 Yes — via DevTools (Application → Local Storage) or the Network tab's request headers, both showing the token in plain text. This is expected and not inherently a vulnerability; the token identifies that browser's own session. The actual risks are someone else gaining access to that device, or an XSS vulnerability letting a malicious script read `localStorage` — production apps sometimes mitigate this with httpOnly cookies instead. See section 19 for the full discussion.
 
 **"So basically: user logs in, frontend extracts the JWT from localStorage, and uses it for FastAPI calls?"**
-Almost — small but important correction: the token isn't *already* in localStorage at login time. Login is the moment that *writes* it there (`localStorage.setItem(...)`, after a successful `POST /auth/login`). Every *subsequent* request is what *reads* it back out via the interceptor. See section 25 for the full step-by-step flow distinguishing these two moments.
+Almost — small but important correction: the token isn't _already_ in localStorage at login time. Login is the moment that _writes_ it there (`localStorage.setItem(...)`, after a successful `POST /auth/login`). Every _subsequent_ request is what _reads_ it back out via the interceptor. See section 25 for the full step-by-step flow distinguishing these two moments.
 
-**"What is the meaning of `worker` in `celery -A myapp worker`?"** *(asked while debugging Phase 5, included here since it's part of the same broader session)*
+**"What is the meaning of `worker` in `celery -A myapp worker`?"** _(asked while debugging Phase 5, included here since it's part of the same broader session)_
 `worker` is a Celery subcommand specifically meaning "start a process that executes tasks from the queue," as opposed to other subcommands like `beat` (scheduler) or `flower` (monitoring UI). Without specifying a subcommand, Celery doesn't know what role to run as.
 
 **"What is the difference between a hook and a plugin? They seem to share the same core concept."**
 Correct instinct on the shared philosophy (extend behavior without modifying source). The actual difference is scope/packaging: a hook is one narrow, specific extension point; a plugin is a packaged bundle of one or more hooks plus setup logic, installed once as a reusable unit. Full breakdown with backend analogies (FastAPI exception handlers, `pytest-flask`) in section 6.
 
 **"Can you elaborate the connection between callback, hook, and plugin?"**
-A callback is the literal *mechanism* underneath both hooks and plugins — a function handed over for something else to call later. "Hook" names a specific named slot expecting a callback; "plugin" names a whole bundle of such slots packaged together. `useEffect`'s callback, an axios interceptor's callback, and a FastAPI exception handler are all the exact same underlying pattern, just appearing in different frameworks/languages. Full layered diagram in section 6.
+A callback is the literal _mechanism_ underneath both hooks and plugins — a function handed over for something else to call later. "Hook" names a specific named slot expecting a callback; "plugin" names a whole bundle of such slots packaged together. `useEffect`'s callback, an axios interceptor's callback, and a FastAPI exception handler are all the exact same underlying pattern, just appearing in different frameworks/languages. Full layered diagram in section 6.
 
 **"What is the parameter of the function `useEffect` itself accepts?"**
-`useEffect` takes exactly two arguments: the effect function itself, and a dependency array. The effect function takes no parameters of its own — it doesn't need any, since it can read any variable already in scope via closures (the same closure concept from the backend's decorators). Contrast with axios's interceptor callback, which *does* receive a parameter (`config`) because axios explicitly passes one in.
+`useEffect` takes exactly two arguments: the effect function itself, and a dependency array. The effect function takes no parameters of its own — it doesn't need any, since it can read any variable already in scope via closures (the same closure concept from the backend's decorators). Contrast with axios's interceptor callback, which _does_ receive a parameter (`config`) because axios explicitly passes one in.
 
 **"Why can't we just directly call `getDailySummary`/`getActiveGoal` outside the async wrapper function?"**
 Two layered reasons: (1) calling an `async` function without `await` just gives you back a pending Promise, not the actual data — you'd need `.then()` chains instead; (2) `await` syntax specifically requires being inside a function marked `async`, and `useEffect`'s own callback can't be `async` (section 9) — so if you want `await`-style code, a separate inner `async` function is required. Both `.then()` chaining and the inner-async-function approach are valid; NutriTrack uses the latter for readability once multiple awaited values need to be combined.
@@ -1089,8 +1110,8 @@ The core mental model shift: React components don't "continue" execution from wh
 `.toFixed(n)` rounds a number to `n` decimal places — but unlike Python's `round()`, it always returns a **string**, not a number. Relevant when formatting percentages or totals for display (e.g. `percentage.toFixed(0)` to show `"17"` instead of `"17.384726..."`).
 
 **"Can you explain `Math.min(total, goal)` and `Math.max(goal - total, 0)` in the MacroRing component line by line?"**
-Both exist to handle the same edge case — eating more than the goal. `Math.min(total, goal)` caps the "consumed" ring segment so it visually never exceeds a full circle even if real intake is higher. `Math.max(goal - total, 0)` prevents the "remaining" segment from going negative (a pie chart segment can't have negative size). Both only affect the *visual ring*; the percentage *text* deliberately still shows the true, unclamped value (e.g. "122%") even while the ring itself caps at 100%. Full walkthrough with numeric examples in section 26.
+Both exist to handle the same edge case — eating more than the goal. `Math.min(total, goal)` caps the "consumed" ring segment so it visually never exceeds a full circle even if real intake is higher. `Math.max(goal - total, 0)` prevents the "remaining" segment from going negative (a pie chart segment can't have negative size). Both only affect the _visual ring_; the percentage _text_ deliberately still shows the true, unclamped value (e.g. "122%") even while the ring itself caps at 100%. Full walkthrough with numeric examples in section 26.
 
 ---
 
-*Last updated through Phase 6, lesson 6.2 (Dashboard with macro rings). Next: lesson 6.3 — food log interface.*
+_Last updated through Phase 6, lesson 6.2 (Dashboard with macro rings). Next: lesson 6.3 — food log interface._

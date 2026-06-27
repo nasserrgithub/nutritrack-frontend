@@ -3,6 +3,8 @@ import LoginPage from "./pages/LoginPage"
 import DashboardPage from "./pages/DashboardPage"
 import ProtectedRoute from "./components/ProtectedRoute"
 import RegisterPage from "./pages/RegisterPage"
+import FoodLogPage from "./pages/FoodLogPage"
+import WeightHistoryPage from "./pages/WeightHistoryPage"
 
 const App = () => {
     return (
@@ -19,6 +21,22 @@ const App = () => {
                 />
                 <Route path="/" element={<Navigate to="/login" />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route
+                    path="/log"
+                    element={
+                        <ProtectedRoute>
+                            <FoodLogPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/weight"
+                    element={
+                        <ProtectedRoute>
+                            <WeightHistoryPage />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     )
