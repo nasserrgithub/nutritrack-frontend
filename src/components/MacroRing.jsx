@@ -40,7 +40,7 @@ const MacroRing = ({ label, total, goal }) => {
             </p>
 
             <p className="text-sm text-gray-400 mt-16">
-                {total} / {goal}
+                {total.toFixed(2)} / {goal}
             </p>
         </div>
     )

@@ -14,3 +14,7 @@ export const getFoodLog = async (date) => {
     const response = await apiClient.get(`/log/${date}`)
     return response.data
 }
+
+export const deleteFoodEntry = async (entryId) => {
+    await apiClient.delete(`/log/${entryId}`)
+}

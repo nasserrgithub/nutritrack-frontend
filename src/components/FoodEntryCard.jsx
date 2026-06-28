@@ -1,4 +1,20 @@
-const FoodEntryCard = ({ entry }) => {
+import { useState } from "react"
+import { deleteFoodEntry } from "../api/logs"
+
+const FoodEntryCard = ({ entry, onDeleted }) => {
+    const [deleting, setDeleting] = useState(false)
+
+    const handleDelete = async () => {
+        setDeleting(true)
+        try {
+            await deleteFoodEntry(entry.id)
+            onDeleted(entry.id)
+        } catch (err) {
+            console.log(err)
+            setDeleting(false)
+        }
+    }
+
     return (
         <div className="border-b last:border-b-0 py-3">
             <div className="flex justify-between items-center mb-2">
@@ -10,7 +26,16 @@ const FoodEntryCard = ({ entry }) => {
                         {entry.meal_slot}
                     </p>
                 </div>
-                <p className="text-sm text-gray-500">{entry.weight_g}g</p>
+                <div className="flex items-center gap-3">
+                    <p className="text-sm text-gray-500">{entry.weight_g}g</p>
+                    <button
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="text-xs text-red-500 hover:text-red-700 disabled:text-gray-300"
+                    >
+                        {deleting ? "..." : "Delete"}
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-4 gap-2 text-center">

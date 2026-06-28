@@ -1291,7 +1291,6 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts"
-
 ;<ResponsiveContainer width="100%" height={250}>
     <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />

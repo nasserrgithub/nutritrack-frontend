@@ -30,7 +30,7 @@ const NaturalLanguageForm = ({ onLogged }) => {
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
             <textarea
-                placeholder="Describe what you ate, e.g. 'two eggs and toast'"
+                placeholder="Alternatively, you can describe what you ate here (e.g. 'two eggs and toast')"
                 value={mealData}
                 onChange={(event) => setMealData(event.target.value)}
                 className="w-full border rounded p-2 mb-3 flex-1"

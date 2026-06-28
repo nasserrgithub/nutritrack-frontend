@@ -7,6 +7,12 @@ const FoodEntryList = ({ loggedDate }) => {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(true)
 
+    const handleDeleted = (deletedId) => {
+        setFoodEntryList((prev) =>
+            prev.filter((entry) => entry.id !== deletedId),
+        )
+    }
+
     useEffect(() => {
         const getFoodEntryList = async () => {
             try {
@@ -30,7 +36,11 @@ const FoodEntryList = ({ loggedDate }) => {
     return (
         <div>
             {foodEntryList.map((foodEntry) => (
-                <FoodEntryCard key={foodEntry.id} entry={foodEntry} />
+                <FoodEntryCard
+                    key={foodEntry.id}
+                    entry={foodEntry}
+                    onDeleted={handleDeleted}
+                />
             ))}
         </div>
     )
