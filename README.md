@@ -1291,6 +1291,7 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts"
+
 ;<ResponsiveContainer width="100%" height={250}>
     <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -1673,4 +1674,192 @@ A circular CSS spinner (`border + border-t-transparent + animate-spin`), chosen 
 
 ---
 
-_Last updated through Phase 6, lesson 6.5 (Goal setting and AI suggestions UI) — Phase 6 complete. Dark mode `dark:` styling pass deferred to a dedicated final touch-up. Next: Phase 7 — testing._
+## 50 — Shared layout via `ProtectedRoute` — adding a navbar without touching every page
+
+Rather than importing and rendering a `Navbar` individually inside every protected page (`DashboardPage`, `FoodLogPage`, `WeightHistoryPage`, `GoalsPage`, `SuggestionsPage`), the navbar was injected into the **one shared wrapper** that every protected page already passes through: `ProtectedRoute`.
+
+```jsx
+const ProtectedRoute = ({ children }) => {
+    const token = localStorage.getItem("token")
+
+    if (!token) {
+        return <Navigate to="/login" />
+    }
+
+    return (
+        <>
+            <Navbar />
+            {children}
+        </>
+    )
+}
+```
+
+Since every protected `<Route>` already wraps its page in `<ProtectedRoute>{...}</ProtectedRoute>`, adding `<Navbar />` _inside_ `ProtectedRoute`, above `children`, means every one of those pages automatically gets the navbar with zero per-page changes — a direct, practical payoff of having consistently used the wrapper pattern since lesson 6.1, rather than checking for a token independently inside each page component.
+
+**Fragments (`<>...</>`)** — JSX requires a component to return exactly one root element. Returning `<Navbar />` and `{children}` as two siblings would normally need a wrapping element (e.g. a `<div>`) to satisfy that rule — but an unnecessary wrapping `<div>` can sometimes interfere with surrounding CSS layout (an unexpected extra node breaking a parent `flex`/`grid`'s assumptions about its direct children). A Fragment (`<>` / `</>`) groups multiple elements together _without_ adding any actual node to the rendered DOM — it exists purely to satisfy JSX's "one root element" rule, with zero footprint otherwise.
+
+---
+
+## 51 — `useLocation()` — reading the current URL for active-link styling
+
+```jsx
+import { useLocation } from "react-router-dom"
+
+const Navbar = () => {
+    const location = useLocation()
+    // location.pathname → e.g. "/dashboard"
+
+    return (
+        <Link
+            to="/dashboard"
+            className={
+                location.pathname === "/dashboard"
+                    ? "text-blue-600 font-semibold"
+                    : "text-gray-600"
+            }
+        >
+            Dashboard
+        </Link>
+    )
+}
+```
+
+`useLocation()` returns an object describing the _current_ URL, most relevantly `.pathname`. Comparing each nav link's `to` value against `location.pathname` is what drives "highlight whichever link matches the page I'm currently on" — without this, there'd be no way for the navbar to know which of its own links represents the active page.
+
+This is conceptually similar to `useNavigate()` (also from `react-router-dom`) but serves the opposite direction: `useNavigate()` _changes_ the URL, `useLocation()` _reads_ the current one.
+
+---
+
+## 52 — Consolidating logout: moving `handleLogout` out of `DashboardPage` and into `Navbar`
+
+Once a shared navbar existed across every page, keeping `handleLogout` (and the "Log out" button) defined only inside `DashboardPage` no longer made sense — it would mean logout was only reachable from one specific page, or worse, duplicated across several. `handleLogout` and its button moved entirely into `Navbar`, since that's now the one place rendered on every protected page.
+
+**Resulting dead-code cleanup required in `DashboardPage.jsx`:**
+
+```jsx
+// removed — now lives only in Navbar.jsx
+import { Link, useNavigate } from "react-router-dom"
+const navigate = useNavigate()
+const handleLogout = () => { ... }
+```
+
+Leftover unused imports/functions like this are exactly what `npm run lint` (ESLint) is designed to catch automatically — a good habit to run after any refactor that moves logic between components, to confirm nothing was left behind pointing at code that no longer does anything.
+
+---
+
+## 53 — Deleting a resource — IDOR prevention via scoped queries
+
+Implementing `DELETE /log/{entry_id}` raised a real security design question: how do you ensure a user can only delete _their own_ food entries, not anyone else's, simply by guessing/incrementing IDs in the URL?
+
+**The vulnerable approach — fetch by ID alone, check ownership as a separate step afterward:**
+
+```python
+entry = session.query(FoodEntryModel).filter(FoodEntryModel.id == entry_id).first()
+if not entry:
+    raise FoodNotFoundError(...)        # truly doesn't exist
+if entry.user_id != user_id:
+    raise PermissionError(...)           # exists, but belongs to someone else — DIFFERENT error
+```
+
+This leaks information: if "exists but not yours" maps to a distinguishable response (e.g. `403 Forbidden`) different from "genuinely doesn't exist" (`404`), an attacker probing sequential IDs can map out exactly which entry IDs are real in your system — even though they can never actually access or delete them. This category of vulnerability is sometimes called **IDOR (Insecure Direct Object Reference)** or "broken object-level authorization."
+
+**The fix — make ownership part of the _same_ database query, from the start:**
+
+```python
+def delete(self, entry_id: int, user_id: int) -> None:
+    entry = (
+        self.session.query(FoodEntryModel)
+        .filter(FoodEntryModel.id == entry_id)
+        .filter(FoodEntryModel.user_id == user_id)   # both conditions, ONE query
+        .first()
+    )
+    if not entry:
+        raise FoodNotFoundError(str(entry_id))
+    self.session.delete(entry)
+    self.session.flush()
+```
+
+If entry 42 exists but belongs to a different user, the query asking for "id=42 AND user_id=1" finds **no row matching both conditions simultaneously** — functionally identical, from the database's perspective, to entry 42 not existing at all. Both "never existed" and "exists but isn't yours" now produce the exact same outcome (a 404), giving an attacker zero ability to distinguish the two cases or use the endpoint to probe what data exists.
+
+**The general principle:** don't expose a difference between "doesn't exist" and "exists but you're not authorized" when revealing that distinction is itself useful information to someone who shouldn't have it — the same underlying spirit as keeping login error messages generic ("Invalid email or password," rather than confirming specifically _which_ registered emails exist in the system).
+
+**`204 No Content`** — the conventional HTTP status for a successful DELETE with nothing meaningful to return (the resource is gone — there's nothing left to send back). The endpoint correspondingly has `-> None` as its return type and no `response_model` at all, unlike every other endpoint built so far, which all returned some Pydantic schema.
+
+---
+
+## 54 — Client-side list updates after delete — skipping the network round-trip entirely
+
+Earlier refresh strategies (`key`-remount in section 35, the `refreshKey` dependency-array pattern) both trigger a fresh **network request** back to the server to get updated data. Deletion is different: the moment a delete succeeds, you already know _exactly_ what changed — one specific ID is now gone — so there's no need to ask the server "what does the list look like now."
+
+```jsx
+// FoodEntryCard — after a successful delete, tell the parent WHICH id was removed
+const handleDelete = async () => {
+    setDeleting(true)
+    try {
+        await deleteFoodEntry(entry.id)
+        onDeleted(entry.id) // pass the specific ID up, not just a generic "something happened" signal
+    } catch (err) {
+        console.log(err)
+        setDeleting(false) // only reset on FAILURE — on success, this card is about to disappear anyway
+    }
+}
+```
+
+```jsx
+// FoodEntryList — update local state directly, no refetch
+const handleDeleted = (deletedId) => {
+    setFoodEntryList((prev) => prev.filter((entry) => entry.id !== deletedId))
+}
+```
+
+**Why `setDeleting(false)` only appears in the `catch` branch, not in a `finally`** (a deliberate departure from every other loading pattern used so far, which all used `finally`): on success, the card is being removed from the list entirely via `onDeleted` — there's no point resetting its own internal state, since the component itself is about to unmount. On failure, the card remains visible, so its `deleting` flag needs to reset back to a normal, clickable state so the user can retry.
+
+**The general principle worth keeping in mind going forward:** prefer instant client-side state updates (`.filter()`, `.map()` producing a new array) whenever an action gives you _complete_ information about exactly what changed — it's both faster (no network round-trip before the UI updates) and simpler than forcing a full refetch. Reach for a full refetch specifically when you _don't_ have complete information about the new state — e.g., after _creating_ something where the server might compute or attach fields you don't have available client-side yet (which is why `LogFoodForm`/`WeightLogForm`/`GoalForm` all still trigger a refetch on success, rather than trying to locally guess the shape of what the server just created).
+
+---
+
+## 55 — Floating-point display bug — recurring across both backend and frontend
+
+The exact same floating-point imprecision issue from the backend reference's weekly-report PDF/email fix (Phase 5) resurfaced independently on the frontend, this time in `MacroRing`'s total/goal display (`42.449999999999996 / 150` instead of a clean `42.45 / 150`).
+
+**The fix — round only at the display layer, using `.toFixed()`:**
+
+```jsx
+<p className="text-2xl font-bold text-gray-800 mb-3">
+    {Number(total).toFixed(2)}{" "}
+    <span className="text-sm text-gray-400 font-normal">
+        / {Number(goal).toFixed(2)}
+    </span>
+</p>
+```
+
+`Number(...)` wraps the value defensively before calling `.toFixed()` — a string accidentally passed in (e.g. from an unexpectedly-unparsed API response) would throw an error if `.toFixed()` were called directly on it, since `.toFixed()` is specifically a method on the Number type. `Number(...)` guarantees the value is a genuine number before formatting it, regardless of what type it arrived as.
+
+**Reinforces the same principle already established in the backend reference:** the underlying _data_ should stay at full floating-point precision for any further calculations — rounding belongs exclusively at the point where a human is actually going to read the value, never baked into the stored or computed values themselves.
+
+---
+
+## 56 — Smaller Q&As — navbar, delete, and display-fix lessons
+
+**"Should we use a separate database table for a custom-macros logging feature, with `MacroAggregator` needing a new parameter to merge both sources together?"**
+Explored at length, ultimately set aside for later — but the core architectural concern raised is worth remembering for any future feature: introducing a second, parallel data source for "things the user ate" would mean _every_ existing feature that already operates on `FoodEntry` (the aggregator, summary, weekly reports, exports, suggestions) would need to be taught about _both_ sources, forever, or risk silently ignoring one of them. The better-aligned alternative discussed: reuse the _existing_ `Food`/`FoodEntry` tables, tagging entries with a distinct `source` value (e.g. `"custom"`) rather than creating a structurally separate system — letting every existing feature continue working completely unchanged, with zero special-casing.
+
+**"If a user only knows total calories, but not protein/carbs/fat, how should that be handled?"**
+A genuine product/data-integrity question — three options were weighed: silently store zeros (technically simple, but quietly understates real intake with no indication anything is incomplete), explicitly mark protein/carbs/fat as optional/unknown with a visible "unknown macros" UI signal (the recommended approach — most honest about what's actually known), or fabricate a plausible-looking estimate via some generic split (rejected — actively dangerous, since invented numbers that _look_ precise are worse than an honest "unknown").
+
+**"If a user provides all four macro values (including calories) themselves, should the stated calories be trusted, or should the system's usual calories-are-computed-from-macros formula override it?"**
+Resolved in favor of always computing calories from protein/carbs/fat, exactly as every other food source in the app already does (AI-looked-up, CSV-seeded, manually entered) — keeping the system internally consistent, rather than introducing a special case where one particular source of food data behaves differently from every other. A user's self-reported calorie number, in this design, becomes a convenience/sanity-check input rather than a literally-stored value.
+
+**"Why convert an ORM object to a `FoodEntry` dataclass before calling `.scaled_calories()` etc.?"**
+A recap of the Phase 1/Phase 3 architectural split — `FoodEntryModel` (SQLAlchemy) has zero computation methods; it's purely a database-row representation. `scaled_calories()`/`scaled_protein()`/etc. only exist on the Phase 1 `FoodEntry` dataclass, the dedicated in-memory computation layer kept deliberately separate from database-aware code specifically so that pure logic can be tested and reasoned about without ever needing a live database connection — directly relevant heading into Phase 7's testing work.
+
+**"Do we still need the `id` field on `FoodEntryResponse`, or is it optional?"**
+Checked directly against the schema (no default, not `Optional` — genuinely required) and against actual frontend usage (`key={foodEntry.id}` in the list's `.map()`) — confirmed it's both structurally required by Pydantic and functionally necessary for correct React list rendering, especially once partial-list mutations (like deleting one specific entry) are introduced, where a stable real ID — rather than an array index — becomes essential for React to correctly track which DOM node corresponds to which data.
+
+**"Will SQLAlchemy automatically create a new table if I define a new model class?"**
+No — defining a Python `class SomethingModel(Base):` only teaches _SQLAlchemy_ about the table's intended structure; it does not create the table in PostgreSQL. Either `Base.metadata.create_all(engine)` (a blunt one-shot creator with no migration history, explicitly rejected back in Phase 2) or, correctly, the same Alembic flow used throughout the project (`alembic revision --autogenerate`, then `alembic upgrade head`) is required to actually bring a new table into existence in the real database.
+
+---
+
+_Last updated through Phase 6 — all five core lessons complete, plus the navbar, food-entry deletion (with IDOR-safe scoped queries), and a floating-point display fix added as self-directed extensions beyond the original lesson plan. Dark mode `dark:` styling pass still deferred. Next: Phase 7 — testing._
