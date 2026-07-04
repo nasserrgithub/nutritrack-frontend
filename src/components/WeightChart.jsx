@@ -10,6 +10,22 @@ import {
 } from "recharts"
 import { getWeightHistory } from "../api/weight"
 
+const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) return null
+    const entry = payload[0].payload
+    return (
+        <div className="bg-white border border-gray-200 rounded p-2 text-sm shadow">
+            <p className="font-medium text-gray-800">{label}</p>
+            <p className="text-blue-600">{entry.weight_kg} kg</p>
+            {entry.note && (
+                <p className="text-gray-500 mt-1 text-xs italic">
+                    {entry.note}
+                </p>
+            )}
+        </div>
+    )
+}
+
 const WeightChart = ({ refreshKey }) => {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
@@ -45,13 +61,14 @@ const WeightChart = ({ refreshKey }) => {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis dataKey="logged_date" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} domain={["auto", "auto"]} />
-                    <Tooltip />
+                    <Tooltip content={<CustomTooltip />} />
                     <Line
                         type="monotone"
                         dataKey="weight_kg"
                         stroke="#3b82f6"
                         strokeWidth={2}
                         dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
                     />
                 </LineChart>
             </ResponsiveContainer>

@@ -21,7 +21,9 @@ const DashboardPage = () => {
                 setGoal(goalData)
             } catch (err) {
                 console.log(err)
-                setError(`Could not load dashboard data. Navigate to "Goals" section and create a Macro Goal.`)
+                setError(
+                    `Could not load dashboard data. Navigate to "Goals" section and create a Macro Goal.`,
+                )
             } finally {
                 setLoading(false)
             }
