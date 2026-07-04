@@ -14,15 +14,40 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null
     const entry = payload[0].payload
     return (
-        <div className="bg-white border border-gray-200 rounded p-2 text-sm shadow">
-            <p className="font-medium text-gray-800">{label}</p>
-            <p className="text-blue-600">{entry.weight_kg} kg</p>
-            {entry.note && (
-                <p className="text-gray-500 mt-1 text-xs italic">
-                    {entry.note}
-                </p>
-            )}
+        <div className="bg-white border border-gray-200 rounded p-2 text-sm shadow max-w-xs">
+            <p className="font-medium text-gray-800 mb-1">{label}</p>
+            {entry.entries.map((e, i) => (
+                <div
+                    key={i}
+                    className={
+                        i > 0 ? "mt-1 pt-1 border-t border-gray-100" : ""
+                    }
+                >
+                    <p className="text-blue-600">{e.weight_kg} kg</p>
+                    {e.note && (
+                        <p className="text-gray-500 text-xs italic">{e.note}</p>
+                    )}
+                </div>
+            ))}
         </div>
+    )
+}
+
+const processData = (entries) => {
+    const grouped = {}
+    entries.forEach((entry) => {
+        if (!grouped[entry.logged_date]) {
+            grouped[entry.logged_date] = {
+                logged_date: entry.logged_date,
+                weight_kg: entry.weight_kg,
+                entries: [],
+            }
+        }
+        grouped[entry.logged_date].entries.push(entry)
+        grouped[entry.logged_date].weight_kg = entry.weight_kg
+    })
+    return Object.values(grouped).sort((a, b) =>
+        a.logged_date.localeCompare(b.logged_date),
     )
 }
 
@@ -35,7 +60,7 @@ const WeightChart = ({ refreshKey }) => {
         const fetchHistory = async () => {
             try {
                 const entries = await getWeightHistory(30)
-                setData(entries)
+                setData(processData(entries))
             } catch (err) {
                 console.log(err)
                 setError("Could not load weight history.")
