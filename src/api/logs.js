@@ -18,3 +18,8 @@ export const getFoodLog = async (date) => {
 export const deleteFoodEntry = async (entryId) => {
     await apiClient.delete(`/log/${entryId}`)
 }
+
+export const logCustomMacros = async (data) => {
+    const response = await apiClient.post("/log/macros", data)
+    return response.data
+}
