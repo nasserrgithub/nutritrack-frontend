@@ -1,11 +1,56 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import SuggestionForm from "../components/SuggestionForm"
 import SuggestionCard from "../components/SuggestionCard"
 import Spinner from "../components/Spinner"
+import { getDailySummary } from "../api/summary"
+import { getTodayDate } from "../utils/date"
+
+const CalorieStat = ({ label, value }) => (
+    <div
+        style={{
+            background: "var(--nt-bg)",
+            border: "0.5px solid var(--nt-border)",
+            borderRadius: 10,
+            padding: "8px 10px",
+            textAlign: "center",
+        }}
+    >
+        <p
+            style={{
+                fontSize: 16,
+                fontWeight: 500,
+                color: "var(--nt-green-900)",
+            }}
+        >
+            {value === null ? "—" : `${Math.round(value)} kcal`}
+        </p>
+        <p style={{ fontSize: 11, color: "var(--nt-text-muted)" }}>{label}</p>
+    </div>
+)
 
 const SuggestionsPage = () => {
     const [suggestions, setSuggestions] = useState(null)
     const [isGenerating, setIsGenerating] = useState(false)
+    const [consumedCalories, setConsumedCalories] = useState(null)
+
+    // Today's consumed calories don't change while on this page,
+    // so one fetch on mount is enough
+    useEffect(() => {
+        const fetchSummary = async () => {
+            try {
+                const summary = await getDailySummary(getTodayDate())
+                setConsumedCalories(summary.total_calories)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchSummary()
+    }, [])
+
+    const suggestedCalories =
+        suggestions && suggestions.length > 0
+            ? suggestions.reduce((sum, s) => sum + s.calories, 0)
+            : null
 
     return (
         <div
@@ -27,7 +72,7 @@ const SuggestionsPage = () => {
                     Food Suggestions
                 </h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <SuggestionForm
                         onSuggestions={setSuggestions}
                         onLoadingChange={setIsGenerating}
@@ -51,6 +96,24 @@ const SuggestionsPage = () => {
                         >
                             Suggestions
                         </h2>
+
+                        <div
+                            style={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(2, 1fr)",
+                                gap: 8,
+                                marginBottom: 14,
+                            }}
+                        >
+                            <CalorieStat
+                                label="consumed today"
+                                value={consumedCalories}
+                            />
+                            <CalorieStat
+                                label="in these suggestions"
+                                value={isGenerating ? null : suggestedCalories}
+                            />
+                        </div>
 
                         {isGenerating ? (
                             <div
@@ -82,8 +145,8 @@ const SuggestionsPage = () => {
                                     color: "var(--nt-text-muted)",
                                 }}
                             >
-                                Enter foods you have available, then generate
-                                suggestions.
+                                Add a preference if you like, then generate
+                                suggestions for your remaining macros.
                             </p>
                         ) : suggestions.length === 0 ? (
                             <p
@@ -92,8 +155,8 @@ const SuggestionsPage = () => {
                                     color: "var(--nt-text-muted)",
                                 }}
                             >
-                                No suggestions could be generated. Try different
-                                foods.
+                                No suggestions needed — you've already met (or
+                                are very close to) today's macro goals.
                             </p>
                         ) : (
                             <div

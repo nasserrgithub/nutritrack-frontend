@@ -2,30 +2,27 @@ import { useState } from "react"
 import { getSuggestions } from "../api/suggestions"
 import { getTodayDate } from "../utils/date"
 
+// Must match max_length on SuggestionRequest.preference in the backend
+const MAX_PREFERENCE_LENGTH = 200
+
 const SuggestionForm = ({ onSuggestions, onLoadingChange }) => {
-    const [food1, setFood1] = useState("")
-    const [food2, setFood2] = useState("")
-    const [food3, setFood3] = useState("")
-    const [food4, setFood4] = useState("")
-    const [food5, setFood5] = useState("")
+    const [preference, setPreference] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+        setError("")
         setLoading(true)
         onLoadingChange(true)
 
         try {
             const foodSuggestions = await getSuggestions(
                 getTodayDate(),
-                `${food1},${food2},${food3},${food4},${food5}`,
+                preference.trim(),
             )
-            setFood1("")
-            setFood2("")
-            setFood3("")
-            setFood4("")
-            setFood5("")
+            // Preference is kept (not cleared) so the user can regenerate
+            // or tweak it without retyping
             onSuggestions(foodSuggestions)
         } catch (err) {
             console.log(err)
@@ -34,18 +31,6 @@ const SuggestionForm = ({ onSuggestions, onLoadingChange }) => {
             setLoading(false)
             onLoadingChange(false)
         }
-    }
-
-    const inputStyle = {
-        width: "100%",
-        border: "0.5px solid var(--nt-border)",
-        borderRadius: 10,
-        padding: "8px 12px",
-        fontSize: 13,
-        color: "var(--nt-text)",
-        background: "var(--nt-bg)",
-        marginBottom: 10,
-        outline: "none",
     }
 
     return (
@@ -58,67 +43,59 @@ const SuggestionForm = ({ onSuggestions, onLoadingChange }) => {
                 padding: 16,
                 display: "flex",
                 flexDirection: "column",
+                gap: 10,
             }}
         >
-            <div style={{ flex: 1 }}>
-                {error && (
-                    <p
-                        style={{
-                            color: "#e53e3e",
-                            fontSize: 13,
-                            marginBottom: 12,
-                        }}
-                    >
-                        {error}
-                    </p>
-                )}
+            {error && <p style={{ color: "#e53e3e", fontSize: 13 }}>{error}</p>}
 
-                {[
-                    {
-                        value: food1,
-                        setter: setFood1,
-                        placeholder: "Available food #1",
-                    },
-                    {
-                        value: food2,
-                        setter: setFood2,
-                        placeholder: "Available food #2",
-                    },
-                    {
-                        value: food3,
-                        setter: setFood3,
-                        placeholder: "Available food #3",
-                    },
-                    {
-                        value: food4,
-                        setter: setFood4,
-                        placeholder: "Available food #4",
-                    },
-                    {
-                        value: food5,
-                        setter: setFood5,
-                        placeholder: "Available food #5",
-                    },
-                ].map((f, i) => (
-                    <input
-                        key={i}
-                        type="text"
-                        placeholder={f.placeholder}
-                        value={f.value}
-                        onChange={(e) => f.setter(e.target.value)}
-                        style={inputStyle}
-                    />
-                ))}
+            <label
+                htmlFor="suggestion-preference"
+                style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "var(--nt-text-muted)",
+                }}
+            >
+                Any preference? (optional)
+            </label>
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="btn-primary"
-                    style={{ marginTop: 4 }}
-                >
-                    {loading ? "Generating..." : "Generate suggestions"}
-                </button>
-            </div>
+            <textarea
+                id="suggestion-preference"
+                placeholder="e.g. 'something spicy', 'I have eggs and oats', 'no dairy', 'a light dinner'"
+                value={preference}
+                onChange={(e) => setPreference(e.target.value)}
+                maxLength={MAX_PREFERENCE_LENGTH}
+                rows={4}
+                style={{
+                    width: "100%",
+                    border: "0.5px solid var(--nt-border)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                    fontSize: 13,
+                    color: "var(--nt-text)",
+                    background: "var(--nt-bg)",
+                    outline: "none",
+                    resize: "none",
+                    overflowY: "auto",
+                    fontFamily: "inherit",
+                    lineHeight: 1.6,
+                }}
+            />
+
+            <p
+                style={{
+                    fontSize: 12,
+                    color: "var(--nt-text-muted)",
+                    textAlign: "right",
+                    marginTop: -6,
+                }}
+            >
+                {preference.length}/{MAX_PREFERENCE_LENGTH}
+            </p>
+
+            <button type="submit" disabled={loading} className="btn-primary">
+                {loading ? "Generating..." : "Generate suggestions"}
+            </button>
         </form>
     )
 }

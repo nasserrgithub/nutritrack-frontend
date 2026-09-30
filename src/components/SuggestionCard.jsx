@@ -1,4 +1,6 @@
 const SuggestionCard = ({ suggestion }) => {
+    const ingredients = suggestion.ingredients ?? []
+
     return (
         <div
             style={{
@@ -27,6 +29,48 @@ const SuggestionCard = ({ suggestion }) => {
                     {suggestion.weight_g}g
                 </span>
             </p>
+
+            {ingredients.length > 0 && (
+                <ul
+                    style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: "8px 0 0",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                    }}
+                >
+                    {ingredients.map((ing, i) => (
+                        <li
+                            key={i}
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: 12,
+                                fontSize: 12,
+                                color: "var(--nt-text)",
+                                borderBottom:
+                                    i < ingredients.length - 1
+                                        ? "0.5px dashed var(--nt-border)"
+                                        : "none",
+                                paddingBottom: 4,
+                            }}
+                        >
+                            <span>{ing.name}</span>
+                            <span
+                                style={{
+                                    fontWeight: 500,
+                                    color: "var(--nt-green-900)",
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                {Math.round(ing.weight_g)}g
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
 
             <div
                 style={{
