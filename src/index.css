@@ -58,3 +58,15 @@ textarea:focus {
     background: var(--nt-green-100);
     color: var(--nt-green-900);
 }
+
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 70px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 70px;
+    }
+}

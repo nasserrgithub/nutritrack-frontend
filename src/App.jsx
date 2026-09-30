@@ -9,6 +9,7 @@ import GoalsPage from "./pages/GoalsPage"
 import SuggestionsPage from "./pages/SuggestionsPage"
 import AuthCallbackPage from "./pages/AuthCallbackPage"
 import ProfilePage from "./pages/ProfilePage"
+import AccountPage from "./pages/AccountPage"
 
 const App = () => {
     return (
@@ -63,6 +64,14 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <ProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/account"
+                    element={
+                        <ProtectedRoute>
+                            <AccountPage />
                         </ProtectedRoute>
                     }
                 />
