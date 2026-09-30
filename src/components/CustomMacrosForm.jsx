@@ -57,7 +57,15 @@ const CustomMacrosForm = ({ onLogged }) => {
     return (
         <form
             onSubmit={handleSubmit}
-            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column", gap: 10 }}
+            style={{
+                background: "var(--nt-card)",
+                borderRadius: "var(--nt-radius)",
+                border: "0.5px solid var(--nt-border)",
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+            }}
         >
             {error && <p style={{ color: "#e53e3e", fontSize: 13 }}>{error}</p>}
 
@@ -77,7 +85,13 @@ const CustomMacrosForm = ({ onLogged }) => {
                 style={inputStyle}
             />
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: 8,
+                }}
+            >
                 <input
                     type="number"
                     placeholder="Protein (g)"
@@ -111,7 +125,10 @@ const CustomMacrosForm = ({ onLogged }) => {
                         borderRadius: 10,
                         padding: "10px 12px",
                         fontSize: 13,
-                        color: mealSlot === "unspecified" ? "var(--nt-text-muted)" : "var(--nt-text)",
+                        color:
+                            mealSlot === "unspecified"
+                                ? "var(--nt-text-muted)"
+                                : "var(--nt-text)",
                         background: "var(--nt-bg)",
                         textAlign: "left",
                         cursor: "pointer",
@@ -120,33 +137,50 @@ const CustomMacrosForm = ({ onLogged }) => {
                         alignItems: "center",
                     }}
                 >
-                    <span style={{ textTransform: "capitalize" }}>{mealSlot}</span>
-                    <span style={{ fontSize: 10, color: "var(--nt-text-muted)" }}>▼</span>
+                    <span style={{ textTransform: "capitalize" }}>
+                        {mealSlot}
+                    </span>
+                    <span
+                        style={{ fontSize: 10, color: "var(--nt-text-muted)" }}
+                    >
+                        ▼
+                    </span>
                 </button>
 
                 {mealSlotOpen && (
-                    <div style={{
-                        position: "absolute",
-                        top: "calc(100% + 4px)",
-                        left: 0,
-                        right: 0,
-                        background: "#fff",
-                        border: "0.5px solid var(--nt-border)",
-                        borderRadius: 10,
-                        zIndex: 10,
-                        overflow: "hidden",
-                    }}>
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: "calc(100% + 4px)",
+                            left: 0,
+                            right: 0,
+                            background: "#fff",
+                            border: "0.5px solid var(--nt-border)",
+                            borderRadius: 10,
+                            zIndex: 10,
+                            overflow: "hidden",
+                        }}
+                    >
                         {MEAL_OPTIONS.map((opt) => (
                             <div
                                 key={opt}
-                                onClick={() => { setMealSlot(opt); setMealSlotOpen(false) }}
+                                onClick={() => {
+                                    setMealSlot(opt)
+                                    setMealSlotOpen(false)
+                                }}
                                 style={{
                                     padding: "10px 12px",
                                     fontSize: 13,
                                     cursor: "pointer",
                                     textTransform: "capitalize",
-                                    background: mealSlot === opt ? "var(--nt-green-50)" : "#fff",
-                                    color: mealSlot === opt ? "var(--nt-green-700)" : "var(--nt-text)",
+                                    background:
+                                        mealSlot === opt
+                                            ? "var(--nt-green-50)"
+                                            : "#fff",
+                                    color:
+                                        mealSlot === opt
+                                            ? "var(--nt-green-700)"
+                                            : "var(--nt-text)",
                                 }}
                             >
                                 {opt}

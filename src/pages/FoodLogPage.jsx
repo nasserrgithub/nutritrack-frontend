@@ -17,15 +17,34 @@ const FoodLogPage = () => {
     }
 
     return (
-        <div style={{ minHeight: "100vh", background: "var(--nt-bg)", padding: "20px 16px" }}>
+        <div
+            style={{
+                minHeight: "100vh",
+                background: "var(--nt-bg)",
+                padding: "20px 16px",
+            }}
+        >
             <div style={{ maxWidth: 960, margin: "0 auto" }}>
-                <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 16 }}>
+                <h1
+                    style={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: "var(--nt-text)",
+                        marginBottom: 16,
+                    }}
+                >
                     Food Log
                 </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div className="flex flex-col">
-                        <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 4,
+                                marginBottom: 12,
+                            }}
+                        >
                             {TABS.map((tab, i) => (
                                 <button
                                     key={i}
@@ -35,9 +54,18 @@ const FoodLogPage = () => {
                                         fontSize: 12,
                                         padding: "7px 4px",
                                         borderRadius: 20,
-                                        border: activeTab === i ? "none" : "0.5px solid var(--nt-border)",
-                                        background: activeTab === i ? "var(--nt-green-500)" : "var(--nt-card)",
-                                        color: activeTab === i ? "#fff" : "var(--nt-text-muted)",
+                                        border:
+                                            activeTab === i
+                                                ? "none"
+                                                : "0.5px solid var(--nt-border)",
+                                        background:
+                                            activeTab === i
+                                                ? "var(--nt-green-500)"
+                                                : "var(--nt-card)",
+                                        color:
+                                            activeTab === i
+                                                ? "#fff"
+                                                : "var(--nt-text-muted)",
                                         cursor: "pointer",
                                         fontWeight: activeTab === i ? 500 : 400,
                                         transition: "all 0.15s",
@@ -49,14 +77,34 @@ const FoodLogPage = () => {
                         </div>
 
                         <div className="flex-1">
-                            {activeTab === 0 && <LogFoodForm onLogged={handleLogged} />}
-                            {activeTab === 1 && <NaturalLanguageForm onLogged={handleLogged} />}
-                            {activeTab === 2 && <CustomMacrosForm onLogged={handleLogged} />}
+                            {activeTab === 0 && (
+                                <LogFoodForm onLogged={handleLogged} />
+                            )}
+                            {activeTab === 1 && (
+                                <NaturalLanguageForm onLogged={handleLogged} />
+                            )}
+                            {activeTab === 2 && (
+                                <CustomMacrosForm onLogged={handleLogged} />
+                            )}
                         </div>
                     </div>
 
-                    <div style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16 }}>
-                        <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 8 }}>
+                    <div
+                        style={{
+                            background: "var(--nt-card)",
+                            borderRadius: "var(--nt-radius)",
+                            border: "0.5px solid var(--nt-border)",
+                            padding: 16,
+                        }}
+                    >
+                        <h2
+                            style={{
+                                fontSize: 13,
+                                fontWeight: 500,
+                                color: "var(--nt-text-muted)",
+                                marginBottom: 8,
+                            }}
+                        >
                             Today's entries
                         </h2>
                         <FoodEntryList key={refreshKey} loggedDate={today} />

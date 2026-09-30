@@ -51,17 +51,54 @@ const SuggestionForm = ({ onSuggestions, onLoadingChange }) => {
     return (
         <form
             onSubmit={handleSubmit}
-            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column" }}
+            style={{
+                background: "var(--nt-card)",
+                borderRadius: "var(--nt-radius)",
+                border: "0.5px solid var(--nt-border)",
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+            }}
         >
             <div style={{ flex: 1 }}>
-                {error && <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+                {error && (
+                    <p
+                        style={{
+                            color: "#e53e3e",
+                            fontSize: 13,
+                            marginBottom: 12,
+                        }}
+                    >
+                        {error}
+                    </p>
+                )}
 
                 {[
-                    { value: food1, setter: setFood1, placeholder: "Available food #1" },
-                    { value: food2, setter: setFood2, placeholder: "Available food #2" },
-                    { value: food3, setter: setFood3, placeholder: "Available food #3" },
-                    { value: food4, setter: setFood4, placeholder: "Available food #4" },
-                    { value: food5, setter: setFood5, placeholder: "Available food #5" },
+                    {
+                        value: food1,
+                        setter: setFood1,
+                        placeholder: "Available food #1",
+                    },
+                    {
+                        value: food2,
+                        setter: setFood2,
+                        placeholder: "Available food #2",
+                    },
+                    {
+                        value: food3,
+                        setter: setFood3,
+                        placeholder: "Available food #3",
+                    },
+                    {
+                        value: food4,
+                        setter: setFood4,
+                        placeholder: "Available food #4",
+                    },
+                    {
+                        value: food5,
+                        setter: setFood5,
+                        placeholder: "Available food #5",
+                    },
                 ].map((f, i) => (
                     <input
                         key={i}

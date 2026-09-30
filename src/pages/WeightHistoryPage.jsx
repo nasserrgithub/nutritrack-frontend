@@ -10,9 +10,22 @@ const WeightHistoryPage = () => {
     }
 
     return (
-        <div style={{ minHeight: "100vh", background: "var(--nt-bg)", padding: "20px 16px" }}>
+        <div
+            style={{
+                minHeight: "100vh",
+                background: "var(--nt-bg)",
+                padding: "20px 16px",
+            }}
+        >
             <div style={{ maxWidth: 960, margin: "0 auto" }}>
-                <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 16 }}>
+                <h1
+                    style={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: "var(--nt-text)",
+                        marginBottom: 16,
+                    }}
+                >
                     Weight History
                 </h1>
 

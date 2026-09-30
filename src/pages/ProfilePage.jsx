@@ -45,31 +45,75 @@ const ProfilePage = () => {
     }
 
     return (
-        <div style={{
-            minHeight: "100vh",
-            background: "var(--nt-bg)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 16,
-            position: "relative",
-            overflow: "hidden",
-        }}>
-            <div style={{ position: "absolute", top: -80, right: -80, width: 300, height: 300, borderRadius: "50%", background: "var(--nt-green-50)", opacity: 0.8 }} />
-            <div style={{ position: "absolute", bottom: -100, left: -60, width: 250, height: 250, borderRadius: "50%", background: "var(--nt-green-100)", opacity: 0.4 }} />
+        <div
+            style={{
+                minHeight: "100vh",
+                background: "var(--nt-bg)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 16,
+                position: "relative",
+                overflow: "hidden",
+            }}
+        >
+            <div
+                style={{
+                    position: "absolute",
+                    top: -80,
+                    right: -80,
+                    width: 300,
+                    height: 300,
+                    borderRadius: "50%",
+                    background: "var(--nt-green-50)",
+                    opacity: 0.8,
+                }}
+            />
+            <div
+                style={{
+                    position: "absolute",
+                    bottom: -100,
+                    left: -60,
+                    width: 250,
+                    height: 250,
+                    borderRadius: "50%",
+                    background: "var(--nt-green-100)",
+                    opacity: 0.4,
+                }}
+            />
 
-            <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 400 }}>
+            <div
+                style={{
+                    position: "relative",
+                    zIndex: 1,
+                    width: "100%",
+                    maxWidth: 400,
+                }}
+            >
                 <div style={{ textAlign: "center", marginBottom: 24 }}>
-                    <div style={{
-                        width: 56, height: 56, borderRadius: "50%",
-                        background: "var(--nt-green-500)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        margin: "0 auto 12px",
-                        fontSize: 28,
-                    }}>
+                    <div
+                        style={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: "50%",
+                            background: "var(--nt-green-500)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            margin: "0 auto 12px",
+                            fontSize: 28,
+                        }}
+                    >
                         🥗
                     </div>
-                    <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 4 }}>
+                    <h1
+                        style={{
+                            fontSize: 20,
+                            fontWeight: 500,
+                            color: "var(--nt-text)",
+                            marginBottom: 4,
+                        }}
+                    >
                         Complete your profile
                     </h1>
                     <p style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>
@@ -77,10 +121,35 @@ const ProfilePage = () => {
                     </p>
                 </div>
 
-                <div style={{ background: "#fff", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: "24px 20px" }}>
-                    {error && <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12, textAlign: "center" }}>{error}</p>}
+                <div
+                    style={{
+                        background: "#fff",
+                        borderRadius: "var(--nt-radius)",
+                        border: "0.5px solid var(--nt-border)",
+                        padding: "24px 20px",
+                    }}
+                >
+                    {error && (
+                        <p
+                            style={{
+                                color: "#e53e3e",
+                                fontSize: 13,
+                                marginBottom: 12,
+                                textAlign: "center",
+                            }}
+                        >
+                            {error}
+                        </p>
+                    )}
 
-                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <form
+                        onSubmit={handleSubmit}
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 10,
+                        }}
+                    >
                         <input
                             type="number"
                             placeholder="Weight (kg)"
@@ -125,33 +194,53 @@ const ProfilePage = () => {
                                     alignItems: "center",
                                 }}
                             >
-                                <span style={{ textTransform: "capitalize" }}>{gender}</span>
-                                <span style={{ fontSize: 10, color: "var(--nt-text-muted)" }}>▼</span>
+                                <span style={{ textTransform: "capitalize" }}>
+                                    {gender}
+                                </span>
+                                <span
+                                    style={{
+                                        fontSize: 10,
+                                        color: "var(--nt-text-muted)",
+                                    }}
+                                >
+                                    ▼
+                                </span>
                             </button>
 
                             {genderOpen && (
-                                <div style={{
-                                    position: "absolute",
-                                    top: "calc(100% + 4px)",
-                                    left: 0,
-                                    right: 0,
-                                    background: "#fff",
-                                    border: "0.5px solid var(--nt-border)",
-                                    borderRadius: 10,
-                                    zIndex: 10,
-                                    overflow: "hidden",
-                                }}>
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        top: "calc(100% + 4px)",
+                                        left: 0,
+                                        right: 0,
+                                        background: "#fff",
+                                        border: "0.5px solid var(--nt-border)",
+                                        borderRadius: 10,
+                                        zIndex: 10,
+                                        overflow: "hidden",
+                                    }}
+                                >
                                     {GENDER_OPTIONS.map((opt) => (
                                         <div
                                             key={opt}
-                                            onClick={() => { setGender(opt); setGenderOpen(false) }}
+                                            onClick={() => {
+                                                setGender(opt)
+                                                setGenderOpen(false)
+                                            }}
                                             style={{
                                                 padding: "10px 12px",
                                                 fontSize: 13,
                                                 cursor: "pointer",
                                                 textTransform: "capitalize",
-                                                background: gender === opt ? "var(--nt-green-50)" : "#fff",
-                                                color: gender === opt ? "var(--nt-green-700)" : "var(--nt-text)",
+                                                background:
+                                                    gender === opt
+                                                        ? "var(--nt-green-50)"
+                                                        : "#fff",
+                                                color:
+                                                    gender === opt
+                                                        ? "var(--nt-green-700)"
+                                                        : "var(--nt-text)",
                                             }}
                                         >
                                             {opt}

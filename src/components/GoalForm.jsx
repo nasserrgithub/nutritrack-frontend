@@ -49,10 +49,27 @@ const GoalForm = ({ onLogged }) => {
     return (
         <form
             onSubmit={handleSubmit}
-            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column" }}
+            style={{
+                background: "var(--nt-card)",
+                borderRadius: "var(--nt-radius)",
+                border: "0.5px solid var(--nt-border)",
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+            }}
         >
             <div style={{ flex: 1 }}>
-                {error && <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+                {error && (
+                    <p
+                        style={{
+                            color: "#e53e3e",
+                            fontSize: 13,
+                            marginBottom: 12,
+                        }}
+                    >
+                        {error}
+                    </p>
+                )}
 
                 <input
                     type="number"
@@ -83,7 +100,11 @@ const GoalForm = ({ onLogged }) => {
                     style={{ ...inputStyle, marginBottom: 14 }}
                 />
 
-                <button type="submit" disabled={loading} className="btn-primary">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary"
+                >
                     {loading ? "Creating goal..." : "Set goal"}
                 </button>
             </div>

@@ -24,7 +24,15 @@ const NaturalLanguageForm = ({ onLogged }) => {
     return (
         <form
             onSubmit={handleSubmit}
-            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column", gap: 10 }}
+            style={{
+                background: "var(--nt-card)",
+                borderRadius: "var(--nt-radius)",
+                border: "0.5px solid var(--nt-border)",
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+            }}
         >
             {error && <p style={{ color: "#e53e3e", fontSize: 13 }}>{error}</p>}
 
