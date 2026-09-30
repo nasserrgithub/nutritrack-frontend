@@ -23,7 +23,7 @@ const FoodLogPage = () => {
                     Food Log
                 </h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div className="flex flex-col">
                         <div className="flex gap-1 mb-3">
                             {TABS.map((tab, i) => (

@@ -7,6 +7,8 @@ import FoodLogPage from "./pages/FoodLogPage"
 import WeightHistoryPage from "./pages/WeightHistoryPage"
 import GoalsPage from "./pages/GoalsPage"
 import SuggestionsPage from "./pages/SuggestionsPage"
+import AuthCallbackPage from "./pages/AuthCallbackPage"
+import ProfilePage from "./pages/ProfilePage"
 
 const App = () => {
     return (
@@ -52,6 +54,15 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <SuggestionsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage />
                         </ProtectedRoute>
                     }
                 />

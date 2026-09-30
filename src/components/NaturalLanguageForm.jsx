@@ -33,8 +33,8 @@ const NaturalLanguageForm = ({ onLogged }) => {
                 placeholder="Alternatively, you can describe what you ate here (e.g. 'two eggs and toast')"
                 value={mealData}
                 onChange={(event) => setMealData(event.target.value)}
-                className="w-full border rounded p-2 mb-3 flex-1"
-                rows={3}
+                className="w-full border rounded p-2 mb-3 resize-none overflow-y-auto"
+                rows={5}
             />
 
             <button
