@@ -61,7 +61,7 @@ const Navbar = () => {
                                 style={{ marginBottom: 2 }}
                             />
                             <span style={{
-                                fontSize: 9,
+                                fontSize: 11,
                                 fontWeight: active ? 500 : 400,
                                 color: active ? "var(--nt-green-700)" : "var(--nt-text-muted)",
                             }}>
