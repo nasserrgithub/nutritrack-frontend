@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { getTodayDate } from "../utils/date"
+import { IconSparkles } from "@tabler/icons-react"
 import LogFoodForm from "../components/LogFoodForm"
 import NaturalLanguageForm from "../components/NaturalLanguageForm"
 import CustomMacrosForm from "../components/CustomMacrosForm"
 import FoodEntryList from "../components/FoodEntryList"
 
-const TABS = ["By name", "Natural language", "Custom macros"]
+const TABS = ["By name", "AI log", "Custom macros"]
 
 const FoodLogPage = () => {
     const [refreshKey, setRefreshKey] = useState(0)
@@ -69,8 +70,23 @@ const FoodLogPage = () => {
                                         cursor: "pointer",
                                         fontWeight: activeTab === i ? 500 : 400,
                                         transition: "all 0.15s",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: 4,
                                     }}
                                 >
+                                    {i === 1 && (
+                                        <IconSparkles
+                                            size={12}
+                                            stroke={1.5}
+                                            color={
+                                                activeTab === i
+                                                    ? "#fff"
+                                                    : "var(--nt-green-500)"
+                                            }
+                                        />
+                                    )}
                                     {tab}
                                 </button>
                             ))}
