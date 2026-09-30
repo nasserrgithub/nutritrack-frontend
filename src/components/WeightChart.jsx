@@ -98,7 +98,7 @@ const WeightChart = ({ refreshKey }) => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const entries = await getWeightHistory(30)
+                const entries = await getWeightHistory(365)
                 setData(processData(entries))
             } catch (err) {
                 console.log(err)
@@ -150,15 +150,8 @@ const WeightChart = ({ refreshKey }) => {
                 padding: 16,
             }}
         >
-            <h2
-                style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "var(--nt-text-muted)",
-                    marginBottom: 16,
-                }}
-            >
-                Weight history (last 30 days)
+            <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 16 }}>
+                Weight history (last 12 months)
             </h2>
             <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={data}>

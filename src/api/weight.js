@@ -5,7 +5,7 @@ export const logWeight = async (weightData) => {
     return response.data
 }
 
-export const getWeightHistory = async (days = 30) => {
+export const getWeightHistory = async (days = 365) => {
     const response = await apiClient.get(`/weight/?days=${days}`)
     return response.data
 }
