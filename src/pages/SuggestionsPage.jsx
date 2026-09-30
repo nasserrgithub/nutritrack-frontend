@@ -8,9 +8,9 @@ const SuggestionsPage = () => {
     const [isGenerating, setIsGenerating] = useState(false)
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
-            <div className="max-w-5xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        <div style={{ minHeight: "100vh", background: "var(--nt-bg)", padding: "20px 16px" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto" }}>
+                <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 16 }}>
                     Food Suggestions
                 </h1>
 
@@ -20,35 +20,30 @@ const SuggestionsPage = () => {
                         onLoadingChange={setIsGenerating}
                     />
 
-                    <div className="bg-white rounded-lg shadow p-4">
-                        <h2 className="text-sm font-medium text-gray-500 mb-3">
+                    <div style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16 }}>
+                        <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 10 }}>
                             Suggestions
                         </h2>
+
                         {isGenerating ? (
-                            <div className="flex flex-col items-center justify-center py-10 gap-3">
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 0", gap: 12 }}>
                                 <Spinner size="lg" />
-                                <p className="text-sm text-gray-400">
-                                    Generating suggestions, this may take a few
-                                    seconds...
+                                <p style={{ fontSize: 13, color: "var(--nt-text-muted)", textAlign: "center" }}>
+                                    Generating suggestions, this may take a few seconds...
                                 </p>
                             </div>
                         ) : suggestions === null ? (
-                            <p className="text-gray-400 text-sm">
-                                Enter foods you have available, then generate
-                                suggestions.
+                            <p style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>
+                                Enter foods you have available, then generate suggestions.
                             </p>
                         ) : suggestions.length === 0 ? (
-                            <p className="text-gray-400 text-sm">
-                                No suggestions could be generated. Try different
-                                foods.
+                            <p style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>
+                                No suggestions could be generated. Try different foods.
                             </p>
                         ) : (
-                            <div className="space-y-3">
+                            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                                 {suggestions.map((s, index) => (
-                                    <SuggestionCard
-                                        key={index}
-                                        suggestion={s}
-                                    />
+                                    <SuggestionCard key={index} suggestion={s} />
                                 ))}
                             </div>
                         )}

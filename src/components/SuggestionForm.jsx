@@ -26,7 +26,6 @@ const SuggestionForm = ({ onSuggestions, onLoadingChange }) => {
             setFood3("")
             setFood4("")
             setFood5("")
-
             onSuggestions(foodSuggestions)
         } catch (err) {
             console.log(err)
@@ -37,60 +36,50 @@ const SuggestionForm = ({ onSuggestions, onLoadingChange }) => {
         }
     }
 
+    const inputStyle = {
+        width: "100%",
+        border: "0.5px solid var(--nt-border)",
+        borderRadius: 10,
+        padding: "8px 12px",
+        fontSize: 13,
+        color: "var(--nt-text)",
+        background: "var(--nt-bg)",
+        marginBottom: 10,
+        outline: "none",
+    }
+
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-lg shadow flex flex-col h-full"
+            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column" }}
         >
-            <div className="flex-1">
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            <div style={{ flex: 1 }}>
+                {error && <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12 }}>{error}</p>}
 
-                <input
-                    type="text"
-                    placeholder="Available food #1"
-                    value={food1}
-                    onChange={(event) => setFood1(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
-                />
-
-                <input
-                    type="text"
-                    placeholder="Available food #2"
-                    value={food2}
-                    onChange={(event) => setFood2(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
-                />
-
-                <input
-                    type="text"
-                    placeholder="Available food #3"
-                    value={food3}
-                    onChange={(event) => setFood3(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
-                />
-
-                <input
-                    type="text"
-                    placeholder="Available food #4"
-                    value={food4}
-                    onChange={(event) => setFood4(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
-                />
-
-                <input
-                    type="text"
-                    placeholder="Available food #5"
-                    value={food5}
-                    onChange={(event) => setFood5(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
-                />
+                {[
+                    { value: food1, setter: setFood1, placeholder: "Available food #1" },
+                    { value: food2, setter: setFood2, placeholder: "Available food #2" },
+                    { value: food3, setter: setFood3, placeholder: "Available food #3" },
+                    { value: food4, setter: setFood4, placeholder: "Available food #4" },
+                    { value: food5, setter: setFood5, placeholder: "Available food #5" },
+                ].map((f, i) => (
+                    <input
+                        key={i}
+                        type="text"
+                        placeholder={f.placeholder}
+                        value={f.value}
+                        onChange={(e) => f.setter(e.target.value)}
+                        style={inputStyle}
+                    />
+                ))}
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:bg-gray-400"
+                    className="btn-primary"
+                    style={{ marginTop: 4 }}
                 >
-                    {loading ? "Generating..." : "Generate"}
+                    {loading ? "Generating..." : "Generate suggestions"}
                 </button>
             </div>
         </form>

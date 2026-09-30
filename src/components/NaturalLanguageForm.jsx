@@ -9,7 +9,6 @@ const NaturalLanguageForm = ({ onLogged }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         setLoading(true)
-
         try {
             await logNaturalMeal({ text: mealData })
             setMealData("")
@@ -25,24 +24,33 @@ const NaturalLanguageForm = ({ onLogged }) => {
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-lg shadow flex flex-col h-full"
+            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column", gap: 10 }}
         >
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            {error && <p style={{ color: "#e53e3e", fontSize: 13 }}>{error}</p>}
 
             <textarea
-                placeholder="Alternatively, you can describe what you ate here (e.g. 'two eggs and toast')"
+                placeholder="Describe what you ate (e.g. '99g rice and 27g fried chicken breast')"
                 value={mealData}
-                onChange={(event) => setMealData(event.target.value)}
-                className="w-full border rounded p-2 mb-3 resize-none overflow-y-auto"
+                onChange={(e) => setMealData(e.target.value)}
                 rows={5}
+                style={{
+                    width: "100%",
+                    border: "0.5px solid var(--nt-border)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                    fontSize: 13,
+                    color: "var(--nt-text)",
+                    background: "var(--nt-bg)",
+                    outline: "none",
+                    resize: "none",
+                    overflowY: "auto",
+                    fontFamily: "inherit",
+                    lineHeight: 1.6,
+                }}
             />
 
-            <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:bg-gray-400"
-            >
-                {loading ? "Logging..." : "Log food"}
+            <button type="submit" disabled={loading} className="btn-primary">
+                {loading ? "Parsing meal..." : "Log meal"}
             </button>
         </form>
     )

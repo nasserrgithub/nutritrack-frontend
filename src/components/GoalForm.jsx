@@ -13,7 +13,6 @@ const GoalForm = ({ onLogged }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         setLoading(true)
-
         try {
             await createGoal({
                 calories: parseFloat(calories),
@@ -35,52 +34,57 @@ const GoalForm = ({ onLogged }) => {
         }
     }
 
+    const inputStyle = {
+        width: "100%",
+        border: "0.5px solid var(--nt-border)",
+        borderRadius: 10,
+        padding: "10px 12px",
+        fontSize: 13,
+        color: "var(--nt-text)",
+        background: "var(--nt-bg)",
+        marginBottom: 10,
+        outline: "none",
+    }
+
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-lg shadow flex flex-col h-full"
+            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column" }}
         >
-            <div className="flex-1">
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            <div style={{ flex: 1 }}>
+                {error && <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12 }}>{error}</p>}
 
                 <input
                     type="number"
                     placeholder="Calories"
                     value={calories}
-                    onChange={(event) => setCalories(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
+                    onChange={(e) => setCalories(e.target.value)}
+                    style={inputStyle}
                 />
-
                 <input
                     type="number"
                     placeholder="Protein (g)"
                     value={proteinG}
-                    onChange={(event) => setProteinG(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
+                    onChange={(e) => setProteinG(e.target.value)}
+                    style={inputStyle}
                 />
-
                 <input
                     type="number"
                     placeholder="Carbs (g)"
                     value={carbsG}
-                    onChange={(event) => setCarbsG(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
+                    onChange={(e) => setCarbsG(e.target.value)}
+                    style={inputStyle}
                 />
-
                 <input
                     type="number"
                     placeholder="Fat (g)"
                     value={fatG}
-                    onChange={(event) => setFatG(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
+                    onChange={(e) => setFatG(e.target.value)}
+                    style={{ ...inputStyle, marginBottom: 14 }}
                 />
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:bg-gray-400"
-                >
-                    {loading ? "Creating goal..." : "Create"}
+                <button type="submit" disabled={loading} className="btn-primary">
+                    {loading ? "Creating goal..." : "Set goal"}
                 </button>
             </div>
         </form>

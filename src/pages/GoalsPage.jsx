@@ -26,54 +26,49 @@ const GoalsPage = () => {
         setRefreshKey((prev) => prev + 1)
     }
 
+    const macroRows = currentGoal ? [
+        { label: "Calories", value: `${currentGoal.calories} kcal` },
+        { label: "Protein", value: `${currentGoal.protein_g}g` },
+        { label: "Carbs", value: `${currentGoal.carbs_g}g` },
+        { label: "Fat", value: `${currentGoal.fat_g}g` },
+    ] : []
+
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
-            <div className="max-w-5xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        <div style={{ minHeight: "100vh", background: "var(--nt-bg)", padding: "20px 16px" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto" }}>
+                <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 16 }}>
                     Macro Goals
                 </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <GoalForm onLogged={handleGoalCreated} />
 
-                    <div className="bg-white rounded-lg shadow p-4">
-                        <h2 className="text-sm font-medium text-gray-500 mb-3">
+                    <div style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16 }}>
+                        <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 12 }}>
                             Current goal
                         </h2>
+
                         {loading ? (
-                            <p className="text-gray-400">Loading...</p>
+                            <p style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>Loading...</p>
                         ) : currentGoal ? (
-                            <div className="space-y-2 text-sm text-gray-700">
-                                <p>
-                                    Calories:{" "}
-                                    <span className="font-semibold">
-                                        {currentGoal.calories} kcal
-                                    </span>
-                                </p>
-                                <p>
-                                    Protein:{" "}
-                                    <span className="font-semibold">
-                                        {currentGoal.protein_g}g
-                                    </span>
-                                </p>
-                                <p>
-                                    Carbs:{" "}
-                                    <span className="font-semibold">
-                                        {currentGoal.carbs_g}g
-                                    </span>
-                                </p>
-                                <p>
-                                    Fat:{" "}
-                                    <span className="font-semibold">
-                                        {currentGoal.fat_g}g
-                                    </span>
-                                </p>
-                                <p className="text-xs text-gray-400 mt-2">
+                            <>
+                                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                    {macroRows.map((row) => (
+                                        <div
+                                            key={row.label}
+                                            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--nt-green-50)", borderRadius: 10 }}
+                                        >
+                                            <span style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>{row.label}</span>
+                                            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-green-900)" }}>{row.value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p style={{ fontSize: 11, color: "var(--nt-text-muted)", marginTop: 12 }}>
                                     Effective since {currentGoal.effective_date}
                                 </p>
-                            </div>
+                            </>
                         ) : (
-                            <p className="text-gray-400">
+                            <p style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>
                                 No active goal set yet.
                             </p>
                         )}

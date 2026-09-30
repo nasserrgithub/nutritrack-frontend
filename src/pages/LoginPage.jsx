@@ -11,7 +11,6 @@ const LoginPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         setError("")
-
         try {
             const data = await login(email, password)
             localStorage.setItem("token", data.access_token)
@@ -22,56 +21,120 @@ const LoginPage = () => {
         }
     }
 
+    const inputStyle = {
+        width: "100%",
+        border: "0.5px solid var(--nt-border)",
+        borderRadius: 10,
+        padding: "10px 12px",
+        fontSize: 14,
+        color: "var(--nt-text)",
+        background: "#fff",
+        marginBottom: 10,
+        outline: "none",
+    }
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white p-8 rounded-lg shadow-md w-80"
-            >
-                <h1 className="text-xl font-bold mb-6">NutriTrack Login</h1>
+        <div style={{
+            minHeight: "100vh",
+            background: "var(--nt-bg)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+            position: "relative",
+            overflow: "hidden",
+        }}>
+            {/* decorative background circles */}
+            <div style={{ position: "absolute", top: -80, right: -80, width: 300, height: 300, borderRadius: "50%", background: "var(--nt-green-50)", opacity: 0.8 }} />
+            <div style={{ position: "absolute", bottom: -100, left: -60, width: 250, height: 250, borderRadius: "50%", background: "var(--nt-green-100)", opacity: 0.4 }} />
+            <div style={{ position: "absolute", top: "40%", left: -40, width: 150, height: 150, borderRadius: "50%", background: "var(--nt-green-50)", opacity: 0.5 }} />
 
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
-                />
-
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    className="w-full border rounded p-2 mb-4"
-                />
-
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-700"
-                >
-                    Log in
-                </button>
-
-                <p className="text-sm text-gray-500 mt-4 text-center">
-                    Don't have an account?{" "}
-                    <Link to="/register" className="text-blue-600 hover:underline">
-                        Register
-                    </Link>
-                </p>
-
-                <div className="mt-4">
-                    <div className="relative flex items-center justify-center mb-3">
-                        <div className="border-t border-gray-200 w-full"></div>
-                        <span className="bg-white px-2 text-gray-400 text-sm absolute">or</span>
+            <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 360 }}>
+                {/* logo / header */}
+                <div style={{ textAlign: "center", marginBottom: 24 }}>
+                    <div style={{
+                        width: 56, height: 56, borderRadius: "50%",
+                        background: "var(--nt-green-500)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        margin: "0 auto 12px",
+                        fontSize: 28,
+                    }}>
+                        🥗
                     </div>
+                    <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--nt-text)", marginBottom: 4 }}>
+                        NutriTrack
+                    </h1>
+                    <p style={{ fontSize: 13, color: "var(--nt-text-muted)" }}>
+                        Track your nutrition, reach your goals
+                    </p>
+                </div>
+
+                {/* card */}
+                <div style={{
+                    background: "#fff",
+                    borderRadius: "var(--nt-radius)",
+                    border: "0.5px solid var(--nt-border)",
+                    padding: "24px 20px",
+                }}>
+                    {error && (
+                        <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12, textAlign: "center" }}>
+                            {error}
+                        </p>
+                    )}
+
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            style={inputStyle}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            style={{ ...inputStyle, marginBottom: 14 }}
+                        />
+
+                        <button type="submit" className="btn-primary">
+                            Log in
+                        </button>
+                    </form>
+
+                    <p style={{ fontSize: 13, color: "var(--nt-text-muted)", textAlign: "center", marginTop: 14 }}>
+                        Don't have an account?{" "}
+                        <Link to="/register" style={{ color: "var(--nt-green-700)", fontWeight: 500, textDecoration: "none" }}>
+                            Register
+                        </Link>
+                    </p>
+
+                    <div style={{ margin: "16px 0", display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{ flex: 1, height: "0.5px", background: "var(--nt-border)" }} />
+                        <span style={{ fontSize: 12, color: "var(--nt-text-muted)" }}>or</span>
+                        <div style={{ flex: 1, height: "0.5px", background: "var(--nt-border)" }} />
+                    </div>
+
                     <a
                         href={`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/auth/google`}
-                        className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded p-2 text-gray-600 hover:bg-gray-50 transition-colors"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 8,
+                            width: "100%",
+                            padding: "10px 12px",
+                            borderRadius: 10,
+                            border: "0.5px solid var(--nt-border)",
+                            background: "#fff",
+                            fontSize: 14,
+                            color: "var(--nt-text)",
+                            textDecoration: "none",
+                            cursor: "pointer",
+                        }}
                     >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <svg style={{ width: 18, height: 18 }} viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -80,7 +143,7 @@ const LoginPage = () => {
                         Continue with Google
                     </a>
                 </div>
-            </form>
+            </div>
         </div>
     )
 }

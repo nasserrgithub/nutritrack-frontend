@@ -14,18 +14,16 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null
     const entry = payload[0].payload
     return (
-        <div className="bg-white border border-gray-200 rounded p-2 text-sm shadow max-w-xs">
-            <p className="font-medium text-gray-800 mb-1">{label}</p>
+        <div style={{ background: "#fff", border: "0.5px solid var(--nt-border)", borderRadius: 10, padding: "10px 12px", fontSize: 13, maxWidth: 200 }}>
+            <p style={{ fontWeight: 500, color: "var(--nt-text)", marginBottom: 6 }}>{label}</p>
             {entry.entries.map((e, i) => (
                 <div
                     key={i}
-                    className={
-                        i > 0 ? "mt-1 pt-1 border-t border-gray-100" : ""
-                    }
+                    style={i > 0 ? { marginTop: 6, paddingTop: 6, borderTop: "0.5px solid var(--nt-border)" } : {}}
                 >
-                    <p className="text-blue-600">{e.weight_kg} kg</p>
+                    <p style={{ color: "var(--nt-green-700)", fontWeight: 500 }}>{e.weight_kg} kg</p>
                     {e.note && (
-                        <p className="text-gray-500 text-xs italic">{e.note}</p>
+                        <p style={{ color: "var(--nt-text-muted)", fontSize: 11, fontStyle: "italic", marginTop: 2 }}>{e.note}</p>
                     )}
                 </div>
             ))}
@@ -71,29 +69,28 @@ const WeightChart = ({ refreshKey }) => {
         fetchHistory()
     }, [refreshKey])
 
-    if (loading) return <p className="p-4">Loading chart...</p>
-    if (error) return <p className="p-4 text-red-500">{error}</p>
-    if (data.length === 0)
-        return <p className="p-4">No weight entries logged yet</p>
+    if (loading) return <p style={{ padding: 16, color: "var(--nt-text-muted)", fontSize: 13 }}>Loading chart...</p>
+    if (error) return <p style={{ padding: 16, color: "#e53e3e", fontSize: 13 }}>{error}</p>
+    if (data.length === 0) return <p style={{ padding: 16, color: "var(--nt-text-muted)", fontSize: 13 }}>No weight entries logged yet</p>
 
     return (
-        <div className="bg-white rounded-lg shadow p-4">
-            <h2 className="text-sm font-medium text-gray-500 mb-4">
+        <div style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16 }}>
+            <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 16 }}>
                 Weight history (last 30 days)
             </h2>
             <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="logged_date" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} domain={["auto", "auto"]} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--nt-border)" />
+                    <XAxis dataKey="logged_date" tick={{ fontSize: 11, fill: "#5a7a45" }} />
+                    <YAxis tick={{ fontSize: 11, fill: "#5a7a45" }} domain={["auto", "auto"]} />
                     <Tooltip content={<CustomTooltip />} />
                     <Line
                         type="monotone"
                         dataKey="weight_kg"
-                        stroke="#3b82f6"
+                        stroke="#639922"
                         strokeWidth={2}
-                        dot={{ r: 3 }}
-                        activeDot={{ r: 5 }}
+                        dot={{ r: 3, fill: "#639922", strokeWidth: 0 }}
+                        activeDot={{ r: 5, fill: "#3B6D11", strokeWidth: 0 }}
                     />
                 </LineChart>
             </ResponsiveContainer>

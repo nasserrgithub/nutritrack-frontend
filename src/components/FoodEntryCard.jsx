@@ -2,70 +2,64 @@ import { useState } from "react"
 import { deleteFoodEntry } from "../api/logs"
 
 const FoodEntryCard = ({ entry, onDeleted }) => {
-    const [deleting, setDeleting] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
-    const handleDelete = async () => {
-        setDeleting(true)
-        try {
-            await deleteFoodEntry(entry.id)
-            onDeleted(entry.id)
-        } catch (err) {
-            console.log(err)
-            setDeleting(false)
-        }
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      await deleteFoodEntry(entry.id)
+      onDeleted(entry.id)
+    } catch (err) {
+      console.log(err)
+      setDeleting(false)
     }
+  }
 
-    return (
-        <div className="border-b last:border-b-0 py-3">
-            <div className="flex justify-between items-center mb-2">
-                <div>
-                    <p className="font-medium text-gray-800">
-                        {entry.food_name}
-                    </p>
-                    <p className="text-xs text-gray-400 capitalize">
-                        {entry.meal_slot}
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <p className="text-sm text-gray-500">{entry.weight_g}g</p>
-                    <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        className="text-xs text-red-500 hover:text-red-700 disabled:text-gray-300"
-                    >
-                        {deleting ? "..." : "Delete"}
-                    </button>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-4 gap-2 text-center">
-                <div className="bg-gray-50 rounded p-1.5">
-                    <p className="text-xs font-semibold text-gray-700">
-                        {entry.calories}
-                    </p>
-                    <p className="text-[10px] text-gray-400">kcal</p>
-                </div>
-                <div className="bg-gray-50 rounded p-1.5">
-                    <p className="text-xs font-semibold text-gray-700">
-                        {entry.protein_g}g
-                    </p>
-                    <p className="text-[10px] text-gray-400">protein</p>
-                </div>
-                <div className="bg-gray-50 rounded p-1.5">
-                    <p className="text-xs font-semibold text-gray-700">
-                        {entry.carbs_g}g
-                    </p>
-                    <p className="text-[10px] text-gray-400">carbs</p>
-                </div>
-                <div className="bg-gray-50 rounded p-1.5">
-                    <p className="text-xs font-semibold text-gray-700">
-                        {entry.fat_g}g
-                    </p>
-                    <p className="text-[10px] text-gray-400">fat</p>
-                </div>
-            </div>
+  return (
+    <div style={{ padding: "10px 0", borderBottom: "0.5px solid var(--nt-border)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text)" }}>{entry.food_name}</p>
+          <p style={{ fontSize: 11, color: "var(--nt-text-muted)", marginTop: 2, textTransform: "capitalize" }}>
+            {entry.weight_g}g · {entry.meal_slot}
+          </p>
         </div>
-    )
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <p style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-green-700)" }}>
+            {Number(entry.calories).toFixed(0)} kcal
+          </p>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 11,
+              color: deleting ? "var(--nt-text-muted)" : "#e53e3e",
+              cursor: deleting ? "default" : "pointer",
+              padding: 0,
+            }}
+          >
+            {deleting ? "..." : "Delete"}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginTop: 8 }}>
+        {[
+          { label: "kcal", value: Number(entry.calories).toFixed(0) },
+          { label: "protein", value: `${Number(entry.protein_g).toFixed(1)}g` },
+          { label: "carbs", value: `${Number(entry.carbs_g).toFixed(1)}g` },
+          { label: "fat", value: `${Number(entry.fat_g).toFixed(1)}g` },
+        ].map((m) => (
+          <div key={m.label} style={{ background: "var(--nt-green-50)", borderRadius: 10, padding: "6px 4px", textAlign: "center" }}>
+            <p style={{ fontSize: 12, fontWeight: 500, color: "var(--nt-green-900)" }}>{m.value}</p>
+            <p style={{ fontSize: 10, color: "var(--nt-text-muted)" }}>{m.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default FoodEntryCard

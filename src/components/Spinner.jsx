@@ -7,7 +7,7 @@ const Spinner = ({ size = "md" }) => {
 
     return (
         <div
-            className={`${sizeClasses[size]} border-blue-600 border-t-transparent rounded-full animate-spin`}
+            className={`${sizeClasses[size]} style={{ borderColor: "var(--nt-green-500)", borderTopColor: "transparent" }} border-t-transparent rounded-full animate-spin`}
         />
     )
 }

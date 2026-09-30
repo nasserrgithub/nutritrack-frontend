@@ -17,24 +17,31 @@ const FoodLogPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
-            <div className="max-w-5xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        <div style={{ minHeight: "100vh", background: "var(--nt-bg)", padding: "20px 16px" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto" }}>
+                <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 16 }}>
                     Food Log
                 </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div className="flex flex-col">
-                        <div className="flex gap-1 mb-3">
+                        <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
                             {TABS.map((tab, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setActiveTab(i)}
-                                    className={`flex-1 text-xs py-2 px-1 rounded transition-colors ${
-                                        activeTab === i
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                                    }`}
+                                    style={{
+                                        flex: 1,
+                                        fontSize: 12,
+                                        padding: "7px 4px",
+                                        borderRadius: 20,
+                                        border: activeTab === i ? "none" : "0.5px solid var(--nt-border)",
+                                        background: activeTab === i ? "var(--nt-green-500)" : "var(--nt-card)",
+                                        color: activeTab === i ? "#fff" : "var(--nt-text-muted)",
+                                        cursor: "pointer",
+                                        fontWeight: activeTab === i ? 500 : 400,
+                                        transition: "all 0.15s",
+                                    }}
                                 >
                                     {tab}
                                 </button>
@@ -42,20 +49,14 @@ const FoodLogPage = () => {
                         </div>
 
                         <div className="flex-1">
-                            {activeTab === 0 && (
-                                <LogFoodForm onLogged={handleLogged} />
-                            )}
-                            {activeTab === 1 && (
-                                <NaturalLanguageForm onLogged={handleLogged} />
-                            )}
-                            {activeTab === 2 && (
-                                <CustomMacrosForm onLogged={handleLogged} />
-                            )}
+                            {activeTab === 0 && <LogFoodForm onLogged={handleLogged} />}
+                            {activeTab === 1 && <NaturalLanguageForm onLogged={handleLogged} />}
+                            {activeTab === 2 && <CustomMacrosForm onLogged={handleLogged} />}
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-lg shadow p-4">
-                        <h2 className="text-sm font-medium text-gray-500 mb-2">
+                    <div style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16 }}>
+                        <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 8 }}>
                             Today's entries
                         </h2>
                         <FoodEntryList key={refreshKey} loggedDate={today} />

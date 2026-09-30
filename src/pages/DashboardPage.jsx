@@ -2,71 +2,59 @@ import { useState, useEffect } from "react"
 import { getDailySummary } from "../api/summary"
 import { getActiveGoal } from "../api/goals"
 import { getTodayDate } from "../utils/date"
-import MacroRing from "../components/MacroRing"
+import MacroBar from "../components/MacroBar"
 
 const DashboardPage = () => {
-    const [summary, setSummary] = useState(null)
-    const [goal, setGoal] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState("")
+  const [summary, setSummary] = useState(null)
+  const [goal, setGoal] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-    useEffect(() => {
-        const today = getTodayDate()
+  useEffect(() => {
+    const today = getTodayDate()
+    const fetchData = async () => {
+      try {
+        const summaryData = await getDailySummary(today)
+        const goalData = await getActiveGoal()
+        setSummary(summaryData)
+        setGoal(goalData)
+      } catch (err) {
+        console.log(err)
+        setError("Could not load dashboard data")
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
-        const fetchData = async () => {
-            try {
-                const summaryData = await getDailySummary(today)
-                const goalData = await getActiveGoal()
-                setSummary(summaryData)
-                setGoal(goalData)
-            } catch (err) {
-                console.log(err)
-                setError(
-                    `Could not load dashboard data. Navigate to "Goals" section and create a Macro Goal.`,
-                )
-            } finally {
-                setLoading(false)
-            }
-        }
+  if (loading) return (
+    <div style={{ padding: 32, textAlign: "center", color: "var(--nt-text-muted)" }}>
+      Loading...
+    </div>
+  )
+  if (error) return (
+    <div style={{ padding: 32, textAlign: "center", color: "#e53e3e" }}>
+      {error}
+    </div>
+  )
 
-        fetchData()
-    }, [])
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--nt-bg)", padding: "20px 16px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <h1 style={{ fontSize: 20, fontWeight: 500, color: "var(--nt-text)", marginBottom: 16 }}>
+          Dashboard
+        </h1>
 
-    if (loading) return <p className="p-8">Loading...</p>
-    if (error) return <p className="p-8 text-red-500">{error}</p>
-
-    return (
-        <div className="min-h-screen bg-gray-50 p-8">
-            <div className="max-w-5xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
-                    Dashboard
-                </h1>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <MacroRing
-                        label="Calories"
-                        total={summary.total_calories}
-                        goal={goal.calories}
-                    />
-                    <MacroRing
-                        label="Protein (g)"
-                        total={summary.total_protein}
-                        goal={goal.protein_g}
-                    />
-                    <MacroRing
-                        label="Carbs (g)"
-                        total={summary.total_carbs}
-                        goal={goal.carbs_g}
-                    />
-                    <MacroRing
-                        label="Fat (g)"
-                        total={summary.total_fat}
-                        goal={goal.fat_g}
-                    />
-                </div>
-            </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+          <MacroBar label="Calories" total={summary.total_calories} goal={goal.calories} />
+          <MacroBar label="Protein (g)" total={summary.total_protein} goal={goal.protein_g} />
+          <MacroBar label="Carbs (g)" total={summary.total_carbs} goal={goal.carbs_g} />
+          <MacroBar label="Fat (g)" total={summary.total_fat} goal={goal.fat_g} />
         </div>
-    )
+      </div>
+    </div>
+  )
 }
 
 export default DashboardPage

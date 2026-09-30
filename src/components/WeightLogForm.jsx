@@ -11,7 +11,6 @@ const WeightLogForm = ({ onLogged }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         setLoading(true)
-
         try {
             await logWeight({
                 weight_kg: parseFloat(weightKg),
@@ -29,35 +28,42 @@ const WeightLogForm = ({ onLogged }) => {
         }
     }
 
+    const inputStyle = {
+        width: "100%",
+        border: "0.5px solid var(--nt-border)",
+        borderRadius: 10,
+        padding: "10px 12px",
+        fontSize: 13,
+        color: "var(--nt-text)",
+        background: "var(--nt-bg)",
+        marginBottom: 10,
+        outline: "none",
+    }
+
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-lg shadow flex flex-col h-full"
+            style={{ background: "var(--nt-card)", borderRadius: "var(--nt-radius)", border: "0.5px solid var(--nt-border)", padding: 16, display: "flex", flexDirection: "column" }}
         >
-            <div className="flex-1">
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            <div style={{ flex: 1 }}>
+                {error && <p style={{ color: "#e53e3e", fontSize: 13, marginBottom: 12 }}>{error}</p>}
 
                 <input
                     type="number"
                     placeholder="Weight (kg)"
                     value={weightKg}
-                    onChange={(event) => setWeightKg(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
+                    onChange={(e) => setWeightKg(e.target.value)}
+                    style={inputStyle}
                 />
-
                 <input
                     type="text"
-                    placeholder="Note"
+                    placeholder="Note (optional)"
                     value={note}
-                    onChange={(event) => setNote(event.target.value)}
-                    className="w-full border rounded p-2 mb-3"
+                    onChange={(e) => setNote(e.target.value)}
+                    style={{ ...inputStyle, marginBottom: 14 }}
                 />
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:bg-gray-400"
-                >
+                <button type="submit" disabled={loading} className="btn-primary">
                     {loading ? "Logging..." : "Log weight"}
                 </button>
             </div>
