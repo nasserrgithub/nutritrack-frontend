@@ -150,7 +150,14 @@ const WeightChart = ({ refreshKey }) => {
                 padding: 16,
             }}
         >
-            <h2 style={{ fontSize: 13, fontWeight: 500, color: "var(--nt-text-muted)", marginBottom: 16 }}>
+            <h2
+                style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "var(--nt-text-muted)",
+                    marginBottom: 16,
+                }}
+            >
                 Weight history (last 12 months)
             </h2>
             <ResponsiveContainer width="100%" height={250}>
