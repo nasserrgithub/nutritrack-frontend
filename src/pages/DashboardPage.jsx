@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { getDailySummary } from "../api/summary"
 import { getActiveGoal } from "../api/goals"
 import { getTodayDate } from "../utils/date"
+import { Link } from "react-router-dom"
 import MacroBar from "../components/MacroBar"
 
 const DashboardPage = () => {
@@ -9,6 +10,7 @@ const DashboardPage = () => {
     const [goal, setGoal] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const [noGoal, setNoGoal] = useState(false)
 
     useEffect(() => {
         const today = getTodayDate()
@@ -19,8 +21,12 @@ const DashboardPage = () => {
                 setSummary(summaryData)
                 setGoal(goalData)
             } catch (err) {
-                console.log(err)
-                setError("Could not load dashboard data")
+                if (err.response?.status === 404) {
+                    setNoGoal(true)
+                } else {
+                    console.log(err)
+                    setError("Could not load dashboard data")
+                }
             } finally {
                 setLoading(false)
             }
@@ -40,6 +46,21 @@ const DashboardPage = () => {
                 Loading...
             </div>
         )
+    if (noGoal) {
+        return (
+            <div style={{ maxWidth: 480, margin: "60px auto", textAlign: "center", padding: 16 }}>
+                <p style={{ fontSize: 16, fontWeight: 500, color: "var(--nt-text)", marginBottom: 8 }}>
+                    Welcome to NutriTrack!
+                </p>
+                <p style={{ fontSize: 13, color: "var(--nt-text-muted)", marginBottom: 16 }}>
+                    Set your daily macro goals to start tracking.
+                </p>
+                <Link to="/goals" className="btn-primary">
+                    Set my goals
+                </Link>
+            </div>
+        )
+    }
     if (error)
         return (
             <div style={{ padding: 32, textAlign: "center", color: "#e53e3e" }}>
